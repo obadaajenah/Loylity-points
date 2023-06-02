@@ -1,0 +1,5 @@
+1. Create DataBase and name it "loyality-points-exchange"
+2. run in the terminal :
+    A. "composer require laravel/sanctum"
+    B. "php artisan migrate:fresh"
+    C.  "php artisan serve"
