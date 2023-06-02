@@ -25,4 +25,4 @@ Route::get('/roles',['App\Http\Controllers\RoleController','index']);
 Route::get('/segmentations',['App\Http\Controllers\SegmentationController','index']);
 Route::get('/customers',['App\Http\Controllers\CustomerController','index']);
 
-Route::post('/loginByEmail','AuthController@loginByEmail,'loginByEmail']);
+Route::post('/loginByEmail','AuthController@loginByEmail,'loginByEmail']);///test
