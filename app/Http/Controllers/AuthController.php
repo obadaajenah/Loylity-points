@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -17,15 +18,22 @@ class AuthController extends Controller
     public static function register(Request $request)
     {
         $request->validate([
-            //required email | phone number
+            //required email OR phone number
             'phone_number'=>['required_without:email','string'],
             'email'=>['required_without:phone_number','string'],
             'password'=>['required','string'],
             'fname' =>['required','string'],
-            'lname' => ['reuired','string'],
-            'role_id'=>['reuired','integer'],
+            'lname' => ['required','string'],
+            'role_id'=>['required','integer'],
         ]);
-        return User::create($request->all());
+
+        $user = User::create($request->all());
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $token = $user->createToken('myClinicApplicationToken')->plainTextToken;
+        $response = array_merge($user,['token' => $token]);
+
+        return $response;
     }
 
     /**
@@ -36,7 +44,6 @@ class AuthController extends Controller
      */
     public function loginByEmail(Request $request)
     {
-        // dd("hi there");
         $this->validate($request, [
             'email' => 'required|string|email',
             'password' => 'required|string'
@@ -52,7 +59,7 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('LoyaltyPointsExchangeSystemToken')->plainTextToken;
-        $content = array_merge($user->toArray(),['token' => $token]);
+        $content = array_merge($user->toArray(),['token' => $token,'role' => Role::find($user->role_id)->name]);
         $response = response()->json($content, 201);
 
         return $response;
@@ -66,7 +73,7 @@ class AuthController extends Controller
      */
     public function loginByPhoneNumber(Request $request)
     {
-        $this->validate($request, [
+        $request->validate( [
             'phone_number' => 'required|string',
             'password' => 'required|string'
         ]);
@@ -81,7 +88,7 @@ class AuthController extends Controller
         }
 
         $token = $user->createToken('LoyaltyPointsExchangeSystemToken')->plainTextToken;
-        $content = array_merge($user->toArray(),['token' => $token]);
+        $content = array_merge($user->toArray(),['token' => $token,'role' => Role::find($user->role_id)->name]);
         $response = response()->json($content, 201);
 
         return $response;

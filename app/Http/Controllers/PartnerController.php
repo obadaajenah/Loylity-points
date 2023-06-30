@@ -14,7 +14,30 @@ class PartnerController extends Controller
      */
     public function index()
     {
-        return Partner::all();
+        $ps = Partner::all();
+        $res =[];
+        $i =0;
+        foreach($ps as $p){
+            // dd($p->user->toArray());
+            $res[$i] = array_merge($p->toArray() , $p->user->toArray());
+            $res[$i]["id"] = $p->toArray()["id"];
+            $i++;
+        }
+        return $res;
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexName()
+    {
+        $ps = Partner::all();
+        $res =[];
+        foreach($ps as $p){
+            $res = array_merge($res,[$p->user["fname"]]);
+        }
+        return $res;
     }
 
     /**

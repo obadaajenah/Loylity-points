@@ -19,10 +19,10 @@ class Customer extends Model
     ];
 
     public function User(){
-        return $this->belongsTo('App\Models\Users');
+        return $this->belongsTo('App\Models\User');
     }
 
     public function Segmentation(){
-        return $this->belongsTo('App\Models\Segmentations');
+        return $this->belongsTo('App\Models\Segmentation');
     }
 }

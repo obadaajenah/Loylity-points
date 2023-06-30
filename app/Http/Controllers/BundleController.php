@@ -14,18 +14,9 @@ class BundleController extends Controller
      */
     public function index()
     {
-        //
+        return Bundle::all();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -35,7 +26,19 @@ class BundleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required' , 'string'],
+            'price' => ['required' , 'numeric'],
+            'bonus' => ['numeric'],
+            'gems' => ['numeric'],
+            'golden_offers_number' => ['numeric'],
+            'silver_offers_number' => ['numeric'],
+            'bronze_offers_number' => ['numeric'],
+            'new_offers_number' => ['numeric']
+        ]);
+
+        $bundle = Bundle::create($request->all());
+        return response()->json(['message' => 'bundle ' . $bundle->name . ' added successfully !'],200);
     }
 
     /**
@@ -45,17 +48,6 @@ class BundleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Bundle $bundle)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Bundle  $bundle
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Bundle $bundle)
     {
         //
     }
