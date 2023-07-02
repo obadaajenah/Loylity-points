@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -21,18 +22,25 @@ class AuthController extends Controller
             //required email OR phone number
             'phone_number'=>['required_without:email','string'],
             'email'=>['required_without:phone_number','string'],
-            'password'=>['required','string'],
+            'password'=>['required','string','min:8'],
             'fname' =>['required','string'],
             'lname' => ['required','string'],
             'role_id'=>['required','integer'],
+            'image' => ['image']
         ]);
 
+        if ($request->image && !is_string($request->image)) {
+            $photo = $request->image;
+            $newPhoto = time() . $photo->getClientOriginalName();
+            $photo->move('uploads/users', $newPhoto);
+            $request["img_url"] = 'uploads/users/' . $newPhoto;
+        }
+        
         $user = User::create($request->all());
         $user->password = Hash::make($request->password);
         $user->save();
-        $token = $user->createToken('myClinicApplicationToken')->plainTextToken;
-        $response = array_merge($user,['token' => $token]);
-
+        $token = $user->createToken('LoyaltyPointsExchangeSystemToken')->plainTextToken;
+        $response = array_merge($user->toArray(),['token' => $token]);
         return $response;
     }
 
@@ -45,8 +53,8 @@ class AuthController extends Controller
     public function loginByEmail(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|string|email',
-            'password' => 'required|string'
+            'email' => ['required','string','email'],
+            'password' => ['required','string','min:8']
         ]);
 
         #check email
@@ -74,8 +82,8 @@ class AuthController extends Controller
     public function loginByPhoneNumber(Request $request)
     {
         $request->validate( [
-            'phone_number' => 'required|string',
-            'password' => 'required|string'
+            'phone_number' => ['required','string','digits_between:9,12'],
+            'password' => ['required','string','min:8']
         ]);
         
         #check phone number
@@ -94,4 +102,44 @@ class AuthController extends Controller
         return $response;
     }
 
+    /**
+     * Logout the user from app.
+     *
+     * @param  Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        $auth = Auth::user();
+        if ($auth) {
+            // Revoke the token that was used to authenticate the current request...
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'message' => 'Logged out'
+            ], 200);
+        } else {
+            return response()->json(['message' => 'Bad request']);
+        }
+    }
+
+    /**
+     * Logout the user from all devices.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logoutAll()
+    {
+        $auth = Auth::user();
+        if ($auth) {
+            $user = User::find($auth->id);
+            $user->tokens()->delete();
+
+            return response()->json([
+                'message' => 'Logged out from all devices'
+            ], 200);
+        } else {
+            return response()->json(['message' => 'Bad request']);
+        }
+    }
 }
