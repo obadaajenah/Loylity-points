@@ -14,6 +14,7 @@ class Bundle extends Model
      *
      * @var array
      */
+    protected  $table = 'bundles';
     protected $fillable = [
         'name',
         'price',

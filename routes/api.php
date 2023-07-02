@@ -7,6 +7,7 @@ use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\BundleController;
 use App\Http\Controllers\CustomerController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -60,3 +61,17 @@ Route::controller(BundleController::class)->group(function(){
         });
     });
 });
+
+
+
+
+//Route::group(['prefix'=>'admin'],function(){
+
+Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store']);
+
+//});
+//Route::post('Add_Bundle',function(){
+
+//return response()->json(['message'=>'veveev']);
+
+//});

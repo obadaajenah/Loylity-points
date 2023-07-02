@@ -17,6 +17,15 @@ class BundleController extends Controller
         return Bundle::all();
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -25,6 +34,7 @@ class BundleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
+    
     {
         $request->validate([
             'name' => ['required' , 'string'],
