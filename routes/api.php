@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,3 +27,17 @@ Route::get('/segmentations',['App\Http\Controllers\SegmentationController','inde
 Route::get('/customers',['App\Http\Controllers\CustomerController','index']);
 
 
+
+
+
+
+//Route::group(['prefix'=>'admin'],function(){
+
+Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store']);
+
+//});
+//Route::post('Add_Bundle',function(){
+
+//return response()->json(['message'=>'veveev']);
+
+//});

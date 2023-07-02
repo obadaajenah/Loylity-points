@@ -14,7 +14,7 @@ class BundleController extends Controller
      */
     public function index()
     {
-        //
+
     }
 
     /**
@@ -24,7 +24,7 @@ class BundleController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -34,8 +34,26 @@ class BundleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
+    
     {
-        //
+
+         Bundle::create([
+            'name'=>$request->name,
+            'price'=>$request->price,
+            'bonus'=>$request->bonus,
+            'gems'=>$request->gems,
+            'golden_offers_number'=>$request->golden_offers_number,
+            'silver_offers_number'=>$request->silver_offers_number,
+            'bronze_offers_number'=>$request->bronze_offers_number,
+            'new_offers_number'=>$request->new_offers_number,
+
+         ]);
+         return response()->json(['message'=>'Add sucssefuly']);
+
+
+
+
+
     }
 
     /**
