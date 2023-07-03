@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Bundle;
 use Illuminate\Http\Request;
+use App\Http\Requests\BundleRequest;
 
 class BundleController extends Controller
 {
@@ -33,19 +34,9 @@ class BundleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    
+    public function store(BundleRequest $request)
+
     {
-        $request->validate([
-            'name' => ['required' , 'string'],
-            'price' => ['required' , 'numeric'],
-            'bonus' => ['numeric'],
-            'gems' => ['numeric'],
-            'golden_offers_number' => ['numeric'],
-            'silver_offers_number' => ['numeric'],
-            'bronze_offers_number' => ['numeric'],
-            'new_offers_number' => ['numeric']
-        ]);
 
         $bundle = Bundle::create($request->all());
         return response()->json(['message' => 'bundle ' . $bundle->name . ' added successfully !'],200);
