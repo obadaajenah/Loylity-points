@@ -67,12 +67,12 @@ Route::controller(PartnerController::class)->group(function(){
 
 Route::controller(BundleController::class)->group(function(){
     Route::prefix('bundles')->group(function(){
- 
+
         Route::middleware(['auth:sanctum','checkPartner'])->group(function(){
             Route::get('/','index')->name('bundles.index');
             Route::get('/{id}','show')->name('bundles.show');
         });
- 
+
         Route::middleware('auth:sanctum','checkAdmin')->group(function(){
             Route::post('/store','store')->name('bundles.store');
         });
@@ -119,12 +119,9 @@ Route::controller(OfferController::class)->group(function(){
     });
 });
 //Route::group(['prefix'=>'admin'],function(){
+Route::group(['prefix'=>'admin'],function(){
 
-Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store']);
+Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store'])->middleware('checkAdmin:admin-api');
 
-//});
-//Route::post('Add_Bundle',function(){
-
-//return response()->json(['message'=>'veveev']);
-
-//});
+Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy']);
+});
