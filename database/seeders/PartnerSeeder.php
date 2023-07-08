@@ -15,7 +15,6 @@ class PartnerSeeder extends Seeder
     public function run()
     {
         DB::table("partners")->insert([
-            // 'id' => 1,
             'user_id' => 2,
             'gems' => 100,
             'bonus' => 100

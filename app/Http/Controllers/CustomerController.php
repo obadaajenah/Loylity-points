@@ -12,13 +12,15 @@ use Illuminate\Support\Facades\Auth;
 class CustomerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the customers.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        return Customer::all();
+        $customers = Customer::all();
+        foreach($customers as $c) {$c->user; $c->segmentation;}
+        return $customers;
     }
 
     /**
@@ -32,7 +34,8 @@ class CustomerController extends Controller
         $request->validate([
             'fname' => ['required', 'string'],
             'lname' => ['required', 'string'],
-            'phone_number' => ['required', 'string', 'unique:users'],
+            'phone_number' => ['required', 'string', 'unique:users','digits_between:9,12'],
+            'email'=>['string', 'unique:users' ,'email'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'nickName' => ['string'],
             'image' => ['image']
@@ -58,6 +61,7 @@ class CustomerController extends Controller
         if(Auth::user()){
             $user = Customer::where('user_id',Auth::user()->id)->first();
             $user->User;
+            $user->Segmentation;
             return $user;
         }else{
             return response()->json(['message' => 'unAuthorized !']);
@@ -73,16 +77,15 @@ class CustomerController extends Controller
     public function update(Request $request)
     {
         if(Auth::user()){
+            $id = Auth::user()->id;
             $request->validate([
-                //required email OR phone number
-                'phone_number'=>['string','unique:users'],
-                'email'=>['string','unqiue:users'],
+                'phone_number'=>['string','unique:users','digits_between:9,12'],
+                'email'=>['string','unqiue:users','email'],
                 'password'=>['string','min:8'],
                 'fname' =>['string'],
                 'lname' => ['string'],
                 'image' => ['image'],
                 'nickName' => ['string'],
-                'image' => ['image']
                 ]);
     
             if ($request->image && !is_string($request->image)) {
@@ -91,10 +94,9 @@ class CustomerController extends Controller
                 $photo->move('uploads/users', $newPhoto);
                 $request["img_url"] = 'uploads/users/' . $newPhoto;
             }
-                // dd("Hi");
-            $customer = Customer::where('user_id',Auth::user()->id)->firstOrFail();
+            $customer = Customer::where('user_id',$id)->firstOrFail();
             $customer->update($request->all());
-            $user = User::findOrFail(Auth::user()->id);
+            $user = User::findOrFail($id);
             $user->update($request->all());
             return response()->json(['message' => 'Your profile updated successfully!']);
         }else{

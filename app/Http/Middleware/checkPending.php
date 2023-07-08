@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class checkAdmin
+class checkPending
 {
     /**
      * Handle an incoming request.
@@ -17,15 +17,11 @@ class checkAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::user()){
-            $user = Auth::user();
-            if($user->role_id == 1){      
-                return $next($request);
-            }else{
-                return response()->json(['message' => 'You are not admin!'],401);
-            }
+        $user = Auth::user();
+        if($user->role_id == 4){            
+            return $next($request);
         }else{
-            return response()->json(['message' => 'unAuthorized!'],401);
+            return response()->json(['message' => 'you are not pending!'],401);
         }
     }
 }

@@ -21,6 +21,8 @@ class checkPartner
             $user = Auth::user();
             if($user->role_id == 2){            
                 return $next($request);
+            }else{
+                return response()->json(['message' => 'you are not partner!'],401);
             }
         }else{
             return response()->json(['message' => 'unAuthorized!'],401);

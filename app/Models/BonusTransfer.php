@@ -15,10 +15,17 @@ class BonusTransfer extends Model
      * @var array
      */
     protected $fillable = [
-        'sender_user_id','receiver_user_id','value','type','exp_date'
+        'sender_user_id',
+        'receiver_user_id',
+        'value',
+        'type',
+        'exp_date'
     ];
 
-    public function User(){
-        return $this->belongsTo('App\Models\User');
+    public function senderUser(){
+        return $this->belongsTo('App\Models\User','sender_user_id');
+    }
+    public function receiverUser(){
+        return $this->belongsTo('App\Models\User','receiver_user_id');
     }
 }

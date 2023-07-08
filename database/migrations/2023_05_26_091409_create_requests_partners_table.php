@@ -17,7 +17,7 @@ class CreateRequestsPartnersTable extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->unsigned()->cascadeOnDelete();
             $table->string('details')->nullable();
-            $table->boolean('status')->default(false);
+            $table->boolean('status')->nullable();
             $table->timestamps();
         });
     }

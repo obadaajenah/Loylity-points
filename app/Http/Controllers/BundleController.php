@@ -18,29 +18,19 @@ class BundleController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    
     {
         $request->validate([
             'name' => ['required' , 'string'],
             'price' => ['required' , 'numeric'],
             'bonus' => ['numeric'],
             'gems' => ['numeric'],
+            'expiration_period'=>['numeric'],
             'golden_offers_number' => ['numeric'],
             'silver_offers_number' => ['numeric'],
             'bronze_offers_number' => ['numeric'],
@@ -54,12 +44,12 @@ class BundleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Bundle  $bundle
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Bundle $bundle)
+    public function show($id)
     {
-        //
+        return Bundle::findOrFail($id);
     }
 
     /**

@@ -14,7 +14,7 @@ class SegmentationController extends Controller
      */
     public function index()
     {
-        return Segmentation::get();
+        return Segmentation::all();
     }
 
 }

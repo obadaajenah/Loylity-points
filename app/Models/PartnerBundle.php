@@ -15,7 +15,15 @@ class PartnerBundle extends Model
      * @var array
      */
     protected $fillable = [
-        'partner_id','bundle_id','price','start_date','end_date'
+        'partner_id',
+        'bundle_id',
+        'price',
+        'golden_offers_number',
+        'silver_offers_number',
+        'bronze_offers_number',
+        'new_offers_number',
+        'start_date',
+        'end_date'
     ];
 
     public function Partner(){
