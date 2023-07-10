@@ -11,7 +11,15 @@ class BundleController extends Controller
 
     public function index()
     {
-        return Bundle::all();
+       $bundle =Bundle::get();
+
+       if ($bundle != null){
+
+        return response()->json( $bundle);
+
+       }
+       return response()->json(['message'=>'Sorry NO Bundles yet ']);
+
     }
 
 
@@ -35,15 +43,26 @@ class BundleController extends Controller
     }
 
 
-    public function update(Request $request, Bundle $bundle)
+    public function update(Request $request, $bundle_name)
     {
+        $bundle = Bundle::where('name', $bundle_name)->first();
+        if ($bundle != null) {
+            $bundle->update($request->all());
+            return response()->json(['message'=>'updated the Bundle',$bundle]);
 
-    }
+        } else {
+
+
+        return response()->json(['message' => "We dont have this bundle!!"]);
+
+    }}
 
 
     public function destroy($bundle_name)
     {
-             $name =Bundle::where('name',$bundle_name)->first();
+
+
+      $name =Bundle::where('name',$bundle_name)->first();
 
         if ($name != null) {
             $name->delete();
@@ -55,3 +74,4 @@ class BundleController extends Controller
 
     }
 }
+

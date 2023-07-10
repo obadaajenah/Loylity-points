@@ -67,7 +67,11 @@ Route::controller(BundleController::class)->group(function(){
 
 Route::group(['prefix'=>'admin'],function(){
 
-Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store'])->middleware('checkAdmin:admin-api');
+Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store'])->middleware(['auth:sanctum','checkAdmin']);
 
 Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy']);
+
+Route::get('Show_Bundles',['App\Http\Controllers\BundleController'::class,'index']);
+
+Route::post('update_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'update']);
 });

@@ -17,10 +17,11 @@ class checkAdmin
      */
     public function handle(Request $request, Closure $next)
     {
+
         if(Auth::user()){
             $user = Auth::user();
-            dd($user->role_id);
-            if($user->role_id == 1){            
+            //dd($user->role_id);
+            if($user->role_id == 1){
                 return $next($request);
             }else{
                 return response()->json(['message' => 'You are not admin!'],401);
