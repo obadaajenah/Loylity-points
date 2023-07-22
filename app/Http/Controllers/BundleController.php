@@ -16,7 +16,6 @@ class BundleController extends Controller
 
 
     public function store(BundleRequest $request)
-
     {
         $bundle = Bundle::create($request->all());
         return response()->json(['message' => 'bundle ' . $bundle->name . ' added successfully !'],200);

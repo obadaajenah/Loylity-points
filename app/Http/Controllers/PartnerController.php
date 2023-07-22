@@ -37,13 +37,14 @@ class PartnerController extends Controller
      */
     public function indexName()
     {
+        // return User::where('role_id',2)->get('fname');
         $ps = Partner::all();
         $res =[];
         foreach($ps as $p){
             $res = array_merge($res,[$p->user["fname"] . ' ' . $p->user["lname"]]);
         }
         return $res;
-    }
+        }
 
     /**
      * Store a newly created resource in storage.
@@ -65,7 +66,7 @@ class PartnerController extends Controller
     public function show()
     {
         if(Auth::user()){
-            $partner = Partner::where('user_id',Auth::user()->id)->first();
+            $partner = Partner::firstWhere('user_id',Auth::user()->id);
             $partner->User;
             $partner->Offer;
             $partner->PartnerBundle;
@@ -101,7 +102,7 @@ class PartnerController extends Controller
                 $photo->move('uploads/users', $newPhoto);
                 $request["img_url"] = 'uploads/users/' . $newPhoto;
             }
-            $partner = Partner::where('user_id',$id)->firstOrFail();
+            $partner = Partner::firstWhere('user_id',$id);
             $partner->update($request->all());
             $user = User::findOrFail($id);
             $user->update($request->all());

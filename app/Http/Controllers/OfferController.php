@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\PartnerBundle;
 use DateTime;
 use Illuminate\Http\Request;
+use App\Models\Customer;
 
 class OfferController extends Controller
 {
@@ -32,6 +33,18 @@ class OfferController extends Controller
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function myoffers()
+    {
+        $user = Auth::user();
+        $c = Customer::firstWhere('user_id',$user->id);
+        return Offer::where('segmentation_id',$c->segmentation_id)->get();
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -40,13 +53,25 @@ class OfferController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required','string'],
             'segmentation_id' => ['required','numeric','digits_between:1,4'],
-            'value' => ['required'],
-            'quantity' => ['required', 'numeric']
+            'valueInBonus' => ['required_without:valueInGems','numeric','min:0'],
+            'valueInGems' => ['required_without:valueInBonus','numeric','min:0'],
+            'quantity' => ['required','numeric','min:0'],
+            'image' => ['image'],
+            'name' => ['required','string']
         ]);
-        $partner = Partner::where(['user_id'=>Auth::user()->id])->first();
-        $partnerBundle = PartnerBundle::where('partner_id',$partner->id)->latest('id')->first();
+
+        if ($request->image && !is_string($request->image)) {
+            $photo = $request->image;
+            $newPhoto = time() . $photo->getClientOriginalName();
+            $photo->move('uploads/offers', $newPhoto);
+            $request["img_url"] = 'uploads/offers/' . $newPhoto;
+        }
+
+        $partner = Partner::firstWhere(['user_id'=>Auth::user()->id]);
+        $partnerBundle = PartnerBundle::where('partner_id',$partner->id)->where('status','active')->latest('id')->first();
+
+        if(!$partnerBundle){return response()->json(['message'=>'please buy bundle to add an offer']);}
 
         #check validty of bundle
         $interval = date_diff(new DateTime(),new DateTime($partnerBundle->end_date))->format('%R%a');
@@ -58,6 +83,7 @@ class OfferController extends Controller
             if($partnerBundle->golden_offers_number <= 0){
                 return response()->json(['message'=>'your limit is over!']);
             }else{
+                // $partnerBundle->decrement('golden_offers_number');
                 $partnerBundle->update(['golden_offers_number'=>$partnerBundle->golden_offers_number-1]);
             }
         }

@@ -41,16 +41,19 @@ class GemsTransferController extends Controller
             'type' => ['string'],//C2C P2C
             'phone_number' => ['required']
         ]);
-        $pu = Auth::user();
-        $p = Partner::where('user_id',$pu->id)->first();
+        $su = Auth::user();
+
+        if($request['type'] == 'P2C' && $su->role_id == 2){$s = Partner::firstWhere('user_id',$su->id);}
+        else if($request['type'] == 'C2C' && $su->role_id == 3){$s = Customer::firstWhere('user_id',$su->id);}
+        else{return response()->json(['message' => 'you can\'t send any bonus !'],401);}
+
         $cu = User::where('phone_number',$request['phone_number'])->first();
-        // dd($cu->toArray());
         $c = Customer::where('user_id',$cu->id)->first();
-        if($p->gems >= $request['value']){
+        if($s->gems >= $request['value']){
             $c->update(['cur_gems' => $c->cur_gems + $request['value'],'total_gems' => $c->total_gems + $request['value']]);
-            $p->update(['gems'=>$p->gems - $request['value']]);
+            $s->update(['gems'=>$s->gems - $request['value']]);
             $request->merge([
-                'sender_user_id' => $pu->id,
+                'sender_user_id' => $su->id,
                 'receiver_user_id' => $cu->id,
             ]);
             GemsTransfer::create($request->all());

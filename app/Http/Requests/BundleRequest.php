@@ -30,10 +30,10 @@ class BundleRequest extends FormRequest
             'bonus' => ['numeric'],
             'gems' => ['numeric'],
             'expiration_period' => ['numeric'],
-            'golden_offers_number' => ['numeric'],
-            'silver_offers_number' => ['numeric'],
-            'bronze_offers_number' => ['numeric'],
-            'new_offers_number' => ['numeric']
+            'golden_offers_number' => ['numeric','min:0'],
+            'silver_offers_number' => ['numeric','min:0'],
+            'bronze_offers_number' => ['numeric','min:0'],
+            'new_offers_number' => ['numeric','min:0']
         ];
     }
 

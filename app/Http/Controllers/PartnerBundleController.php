@@ -39,6 +39,8 @@ class PartnerBundleController extends Controller
         #check if partner has a bundle in this month 
 
         #check if partner has enough money to buy this bundle
+
+
         /*
         ************using Bank API****************
         if(partner -> bankAccount -> balance >= $bundle -> price){
@@ -51,14 +53,14 @@ class PartnerBundleController extends Controller
             $p = Partner::where('user_id',$user->id)->get();
             $p->update([
                 'gems'=>$bundle->gems,
-                'bouns'=>$bundle->bonus
+                'bouns'=>$bundle->bonus,
+                'status'=>1
             ]);
             $now = new DateTime();
             $request->merge([
                 'partner_id' => $p->id,
                 'price' => $bundle->price,
                 'start_date' => getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday'],
-                // 'end_date' => getdate()+$bundle->expiration_period,
                 'end_date' => date_add($now,date_interval_create_from_date_string($bundle->expiration_period . ' days')) //getdate()+$bundle->expiration_period,
             ]);
 

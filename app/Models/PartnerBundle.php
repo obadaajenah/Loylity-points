@@ -17,6 +17,7 @@ class PartnerBundle extends Model
     protected $fillable = [
         'partner_id',
         'bundle_id',
+        'status',
         'price',
         'golden_offers_number',
         'silver_offers_number',

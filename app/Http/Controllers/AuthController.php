@@ -20,12 +20,12 @@ class AuthController extends Controller
     {
         $request->validate([
             //required email OR phone number
-            'phone_number'=>['required_without:email','string','unique:users','digits_between:9,12'],
-            'email'=>['required_without:phone_number','string','unique:users','email'],
-            'password'=>['required','string','min:8'],
-            'fname' =>['required','string'],
+            'phone_number' => ['required_without:email','string','unique:users','digits_between:9,12'],
+            'email' => ['required_without:phone_number','string','unique:users','email'],
+            'password' => ['required','string','min:8','confirmed'],
+            'role_id' => ['required','numeric','digits_between:1,4'],
+            'fname' => ['required','string'],
             'lname' => ['required','string'],
-            'role_id'=>['required','integer'],
             'image' => ['image']
         ]);
 
@@ -63,7 +63,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Bad request'
-            ], 401);
+            ], 400);
         }
 
         $token = $user->createToken('LoyaltyPointsExchangeSystemToken')->plainTextToken;
@@ -92,7 +92,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Bad request'
-            ], 401);
+            ], 400);
         }
 
         $token = $user->createToken('LoyaltyPointsExchangeSystemToken')->plainTextToken;

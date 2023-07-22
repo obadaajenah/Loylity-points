@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GemsTransfer extends Model
+class CommandHistory extends Model
 {
     use HasFactory;
 
@@ -15,13 +15,9 @@ class GemsTransfer extends Model
      * @var array
      */
     protected $fillable = [
-        'sender_user_id',
-        'receiver_user_id',
-        'value',
-        'type'
+        'command_name',
+        'action',
+        'value'
     ];
 
-    public function User(){
-        return $this->belongsTo('App\Models\User');
-    }
 }

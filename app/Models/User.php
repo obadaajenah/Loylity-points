@@ -47,6 +47,10 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Customer');
     }
 
+    public function Partner(){
+        return $this->hasMany('App\Models\Customer');
+    }
+
     public function RequestsPartner(){
         return $this->hasMany('App\Models\RequestsPartner');
     }

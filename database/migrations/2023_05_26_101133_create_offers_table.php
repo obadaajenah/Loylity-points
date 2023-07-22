@@ -18,7 +18,9 @@ class CreateOffersTable extends Migration
             $table->string('name');
             $table->foreignId('partner_id')->nullable()->constrained('partners')->unsigned()->cascadeOnDelete();
             $table->foreignId('segmentation_id')->nullable()->constrained('segmentations')->unsigned()->cascadeOnDelete();
-            $table->integer('value');
+            $table->string('img_url')->nullable();
+            $table->integer('valueInBonus')->nullable();   
+            $table->integer('valueInGems')->nullable();
             $table->integer('quantity');
             $table->timestamps();
         });

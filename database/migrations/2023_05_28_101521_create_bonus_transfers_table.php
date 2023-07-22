@@ -17,6 +17,7 @@ class CreateBonusTransfersTable extends Migration
             $table->id();
             $table->foreignId('sender_user_id')->nullable()->constrained('users')->unsigned()->cascadeOndelete();
             $table->foreignId('receiver_user_id')->nullable()->constrained('users')->unsigned()->cascadeOndelete();
+            $table->string('type')->nullable();
             $table->integer('value');
             $table->date('exp_date');
             $table->timestamps();

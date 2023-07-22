@@ -23,7 +23,7 @@ class BonusTransferController extends Controller
         foreach($bts as $bt){        
             $bt->senderUser;
             $bt->receiverUser;
-    }
+        }
         return $bts;    
     }
 
@@ -35,27 +35,35 @@ class BonusTransferController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request['phone_number']);
         $request->validate([
             'value' => ['required','numeric'],
             'type' => ['string'],//C2C P2C
             'phone_number' => ['required']
         ]);
-        $pu = Auth::user();
-        $p = Partner::where('user_id',$pu->id)->first();
-        $cu = User::where('phone_number',$request['phone_number'])->first();
-        // dd($cu->toArray());
-        $c = Customer::where('user_id',$cu->id)->first();
-        if($cu && $c && $p->bonus >= $request['value']){
+        $su = Auth::user();
+
+        if($request['type'] == 'P2C' && $su->role_id == 2){$s = Partner::firstWhere('user_id',$su->id);$bonus=$s->bonus;}
+        else if($request['type'] == 'C2C' && $su->role_id == 3){$s = Customer::firstWhere('user_id',$su->id);$bonus=$s->cur_bonus;}
+        else{return response()->json(['message' => 'you can\'t send any bonus !'],401);}
+
+        $cu = User::firstWhere('phone_number',$request['phone_number']);
+        $c = Customer::firstWhere('user_id',$cu->id);
+
+
+        if($cu && $c && $bonus >= $request['value']){
             $c->update(['cur_bonus' => $c->cur_bonus + $request['value'],'total_bonus' => $c->total_bonus + $request['value']]);
-            $p->update(['bonus'=>$p->bonus - $request['value']]);
+            $s->update(['bonus'=>$s->bonus - $request['value']]);
+            $s->update(['cur_bonus'=>$s->cur_bonus - $request['value']]);
             $request->merge([
-                'sender_user_id' => $pu->id,
+                'sender_user_id' => $su->id,
                 'receiver_user_id' => $cu->id,
                 'exp_date' => date_add(new DateTime(),date_interval_create_from_date_string('30 days')),
             ]);
             BonusTransfer::create($request->all());
-            return response()->json(['message'=>'Transfer completed successfully!']);
+            return response()->json(['messages'=>[
+                'Transfer completed successfully!',
+                "$request->phone_number you recieved $request->value bonus from $su->fname $su->lname"
+                ]]);
         }
         else{return response()->json(['message'=>'failure!'],400);}
     }

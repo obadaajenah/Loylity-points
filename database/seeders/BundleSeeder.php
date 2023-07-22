@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use App\Models\Bundle;
 
 class BundleSeeder extends Seeder
@@ -15,7 +14,7 @@ class BundleSeeder extends Seeder
      */
     public function run()
     {
-        DB::table("bundles")->insert([
+        Bundle::create([
             'name' => '1M1',
             'price' => 100,
             'bonus' => 100,
@@ -26,7 +25,7 @@ class BundleSeeder extends Seeder
             'bronze_offers_number' => 10,
             'new_offers_number' => 20
         ]);
-        DB::table("bundles")->insert([
+        Bundle::create([
             'name' => '1M2',
             'price' => 200,
             'bonus' => 200,
@@ -37,7 +36,7 @@ class BundleSeeder extends Seeder
             'bronze_offers_number' => 20,
             'new_offers_number' => 40
         ]);
-        DB::table("bundles")->insert([
+        Bundle::create([
             'name' => '3M1',
             'price' => 400,
             'bonus' => 650,

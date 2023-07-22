@@ -45,9 +45,9 @@ Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
 
 Route::controller(CustomerController::class)->group(function(){
     Route::prefix('customers')->group(function(){
-        Route::post('register','register')->name('customers.register');
+        Route::post('/register','register')->name('customers.register');
         Route::middleware(['auth:sanctum','checkCustomer'])->group(function(){
-            Route::get('profile','show')->name('customers.profile');
+            Route::get('/profile','show')->name('customers.profile');
             Route::post('update', 'update')->name('customers.update');
         });
         Route::get('/','index')->middleware(['auth:sanctum','checkAdmin'])->name('customers.index');
@@ -92,12 +92,14 @@ Route::controller(RequestsPartnerController::class)->group(function(){
             Route::post('/{id}','update')->name('requestPartners.update');
         });
     });
+
+    Route::get('/myrequests','myrequests')->middleware(['auth:sanctum','checkPending']);
 });
 
 Route::controller(BonusTransferController::class)->group(function(){
     Route::prefix('BonusTransfer')->group(function(){
         Route::get('/all','index');//->middleware(['auth:sanctum','checkAdmin]);
-        Route::get('/','store')->middleware(['auth:sanctum','checkPartner']);
+        Route::get('/','store')->middleware(['auth:sanctum']);
         Route::get('/{id}','show');//->middleware(['auth:sanctum','checkAdmin']);
     });
 });
@@ -115,13 +117,16 @@ Route::controller(OfferController::class)->group(function(){
         Route::get('/','index')->name('offers.index');//->middleware(['auth:sanctum','checkAdmin']);
         Route::get('/seg/{segmentation_id}','indexBySegmentation')->name('offers.indexBySegmentation');//->middleware(['auth:sanctum']);
         Route::get('/{id}','show')->name('offers.show');//->middleware(['auth:sanctum']);
+        // Route::get('/myoffers','myoffers')->name('myoffers')->middleware(['auth:sanctum','checkCustomer']);
         Route::post('/','store')->name('offers.store')->middleware(['auth:sanctum','checkPartner']);
     });
+    Route::get('/myoffers','myoffers')->middleware(['auth:sanctum','checkCustomer']);
 });
+
 //Route::group(['prefix'=>'admin'],function(){
 Route::group(['prefix'=>'admin'],function(){
 
-Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store'])->middleware('checkAdmin:admin-api');
+    Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store'])->middleware('checkAdmin:admin-api');
 
-Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy']);
+    Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy']);
 });

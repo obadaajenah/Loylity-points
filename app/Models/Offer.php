@@ -18,8 +18,10 @@ class Offer extends Model
         'name',
         'partner_id',
         'segmentation_id',
-        'value',
-        'quantity'
+        'valueInBonus',
+        'valueInGems',
+        'quantity',
+        'img_url'
     ];
 
     public function Partner(){

@@ -19,7 +19,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::all();
-        foreach($customers as $c) {$c->user; $c->segmentation;}
+        foreach ($customers as $c) {$c->user;$c->segmentation;}
         return $customers;
     }
 
@@ -34,8 +34,8 @@ class CustomerController extends Controller
         $request->validate([
             'fname' => ['required', 'string'],
             'lname' => ['required', 'string'],
-            'phone_number' => ['required', 'string', 'unique:users','digits_between:9,12'],
-            'email'=>['string', 'unique:users' ,'email'],
+            'phone_number' => ['required', 'string', 'unique:users', 'digits_between:9,12'],
+            'email' => ['string', 'unique:users', 'email'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'nickName' => ['string'],
             'image' => ['image']
@@ -43,11 +43,19 @@ class CustomerController extends Controller
         $request->merge(['role_id' => 3]);
         $content = AuthController::register($request);
         Customer::create([
-            'user_id'=>$content["id"],
-            'nickName'=>$request["nickName"],
+            'user_id' => $content["id"],
+            'nickName' => $request["nickName"],
             'segmentation_id' => 4,
+            'cur_bonus' => 100,
+            'total_bonus' => 100,
         ]);
-        return response()->json(['token' => $content['token'], 'message' => $content['fname'].' account added successfully!'],201);
+        return response()->json([
+            'token' => $content['token'], 
+            'messages' =>[
+                $content['fname'] . ' account added successfully!',
+                'Welcome to our system , we give 100 bonus for your registeration'
+            ] 
+        ], 201);
     }
 
     /**
@@ -58,14 +66,10 @@ class CustomerController extends Controller
      */
     public function show()
     {
-        if(Auth::user()){
-            $user = Customer::where('user_id',Auth::user()->id)->first();
-            $user->User;
-            $user->Segmentation;
-            return $user;
-        }else{
-            return response()->json(['message' => 'unAuthorized !']);
-        }
+        $user = Customer::firstWhere('user_id', Auth::user()->id);
+        $user->User;
+        $user->Segmentation;
+        return $user;
     }
 
     /**
@@ -76,32 +80,28 @@ class CustomerController extends Controller
      */
     public function update(Request $request)
     {
-        if(Auth::user()){
-            $id = Auth::user()->id;
-            $request->validate([
-                'phone_number'=>['string','unique:users','digits_between:9,12'],
-                'email'=>['string','unqiue:users','email'],
-                'password'=>['string','min:8'],
-                'fname' =>['string'],
-                'lname' => ['string'],
-                'image' => ['image'],
-                'nickName' => ['string'],
-                ]);
-    
-            if ($request->image && !is_string($request->image)) {
-                $photo = $request->image;
-                $newPhoto = time() . $photo->getClientOriginalName();
-                $photo->move('uploads/users', $newPhoto);
-                $request["img_url"] = 'uploads/users/' . $newPhoto;
-            }
-            $customer = Customer::where('user_id',$id)->firstOrFail();
-            $customer->update($request->all());
-            $user = User::findOrFail($id);
-            $user->update($request->all());
-            return response()->json(['message' => 'Your profile updated successfully!']);
-        }else{
-            return response()->json(['message' => 'unAuthorized !']);
-        }   
+        $id = Auth::user()->id;
+        $request->validate([
+            'phone_number' => ['string', 'unique:users', 'digits_between:9,12'],
+            'email' => ['string', 'unique:users', 'email'],
+            'password' => ['string', 'min:8'],
+            'fname' => ['string'],
+            'lname' => ['string'],
+            'image' => ['image'],
+            'nickName' => ['string'],
+        ]);
+
+        if ($request->image && !is_string($request->image)) {
+            $photo = $request->image;
+            $newPhoto = time() . $photo->getClientOriginalName();
+            $photo->move('uploads/users', $newPhoto);
+            $request["img_url"] = 'uploads/users/' . $newPhoto;
+        }
+        $customer = Customer::where('user_id', $id)->firstOrFail();
+        $customer->update($request->all());
+        $user = User::findOrFail($id);
+        $user->update($request->all());
+        return response()->json(['message' => 'Your profile updated successfully!']);
     }
 
     /**
