@@ -43,6 +43,36 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
+
+        'admin' => [
+            'Auth:sanctum',
+            \App\Http\Middleware\checkAdmin::class,
+        ],
+
+        'partner' => [
+            'Auth:sanctum',
+            \App\Http\Middleware\checkPartner::class,            
+        ],
+
+        'customer' => [
+            'Auth:sanctum',
+            \App\Http\Middleware\checkAdmin::class,            
+        ],
+
+        'pending' => [
+            'Auth:sanctum',
+            \App\Http\Middleware\checkPending::class,
+        ],
+
+        'adminOrPartner' => [
+            'Auth:sanctum',
+            \App\Http\Middleware\adminOrPartner::class,
+        ],
+
+        'partnerOrCustomer' => [
+            'Auth:sanctum',
+            \App\Http\Middleware\partnerOrCustomer::class
+        ]
     ];
 
     /**
@@ -66,5 +96,7 @@ class Kernel extends HttpKernel
         'checkCustomer' => \App\Http\Middleware\checkCustomer::class,
         'checkPartner' => \App\Http\Middleware\checkPartner::class,
         'checkPending' => \App\Http\Middleware\checkPending::class,
+        'adminOrPartner' => \App\Http\Middleware\adminOrPartner::class,
+        'partnerOrCustomer' => \App\Http\Middleware\partnerOrCustomer::class,
     ];
 }
