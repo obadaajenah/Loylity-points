@@ -69,7 +69,7 @@ class OfferController extends Controller
         }
 
         $partner = Partner::firstWhere(['user_id'=>Auth::user()->id]);
-        $partnerBundle = PartnerBundle::where('partner_id',$partner->id)->where('status','active')->latest('id')->first();
+        $partnerBundle = PartnerBundle::where('partner_id',$partner->id)->where('status',1)->latest('id')->first();
 
         if(!$partnerBundle){return response()->json(['message'=>'please buy bundle to add an offer']);}
 
