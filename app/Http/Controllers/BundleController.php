@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bundle;
 use Illuminate\Http\Request;
 use App\Http\Requests\BundleRequest;
+use App\Http\Requests\UpdateBundleRequest;
 
 class BundleController extends Controller
 {
@@ -23,12 +24,6 @@ class BundleController extends Controller
     }
 
 
-    public function create()
-    {
-        //
-    }
-
-
     public function store(BundleRequest $request)
 
     {
@@ -36,14 +31,19 @@ class BundleController extends Controller
         return response()->json(['message' => 'bundle ' . $bundle->name . ' added successfully !'],200);
     }
 
-
-    public function show(Bundle $bundle)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
     {
-        //
+        return Bundle::findOrFail($id);
     }
 
 
-    public function update(Request $request, $bundle_name)
+    public function update(UpdateBundleRequest $request, $bundle_name)
     {
         $bundle = Bundle::where('name', $bundle_name)->first();
         if ($bundle != null) {
@@ -55,7 +55,8 @@ class BundleController extends Controller
 
         return response()->json(['message' => "We dont have this bundle!!"]);
 
-    }}
+     }
+    }
 
 
     public function destroy($bundle_name)

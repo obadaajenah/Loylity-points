@@ -19,6 +19,7 @@ class CreateBundlesTable extends Migration
             $table->integer('price')->default(0);
             $table->integer('bonus')->nullable();
             $table->integer('gems')->nullable();
+            $table->integer('expiration_period')->nullable();
             $table->integer('golden_offers_number')->nullable();
             $table->integer('silver_offers_number')->nullable();
             $table->integer('bronze_offers_number')->nullable();

@@ -20,8 +20,8 @@ class AuthController extends Controller
     {
         $request->validate([
             //required email OR phone number
-            'phone_number'=>['required_without:email','string'],
-            'email'=>['required_without:phone_number','string'],
+            'phone_number'=>['required_without:email','string','unique:users','digits_between:9,12'],
+            'email'=>['required_without:phone_number','string','unique:users','email'],
             'password'=>['required','string','min:8'],
             'fname' =>['required','string'],
             'lname' => ['required','string'],
@@ -58,7 +58,7 @@ class AuthController extends Controller
         ]);
 
         #check email
-        $user = User::where('email', $request->email)->firstOrFail();
+        $user = User::where('email', $request->email)->first();
         #check password
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -87,7 +87,7 @@ class AuthController extends Controller
         ]);
         
         #check phone number
-        $user = User::where('phone_number', $request->phone_number)->firstOrFail();
+        $user = User::where('phone_number', $request->phone_number)->first();
         #check password
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([

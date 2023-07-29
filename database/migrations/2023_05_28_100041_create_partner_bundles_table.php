@@ -18,6 +18,10 @@ class CreatePartnerBundlesTable extends Migration
             $table->foreignId('partner_id')->nullable()->constrained('partners')->unsigned()->cascadeOnDelete();
             $table->foreignId('bundle_id')->nullable()->constrained('bundles')->unsigned()->cascadeOnDelete();
             $table->integer('price');
+            $table->integer('golden_offers_number')->default(0);
+            $table->integer('silver_offers_number')->default(0);
+            $table->integer('bronze_offers_number')->default(0);
+            $table->integer('new_offers_number')->default(0);
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();

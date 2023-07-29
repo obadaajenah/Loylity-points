@@ -14,12 +14,12 @@ class Bundle extends Model
      *
      * @var array
      */
-    protected  $table = 'bundles';
     protected $fillable = [
         'name',
         'price',
         'bonus',
         'gems',
+        'expiration_period',
         'golden_offers_number',
         'silver_offers_number',
         'bronze_offers_number',

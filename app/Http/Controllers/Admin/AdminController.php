@@ -10,4 +10,17 @@ class AdminController extends Controller
     public function setGemsValue(){}
     public function setBonusValue(){}
 
+
+
+
+ public function modfiy(){
+
+
+
+
+    
+ }
+
+
+
 }

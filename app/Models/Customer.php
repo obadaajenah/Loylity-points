@@ -15,7 +15,13 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id','nickName','segmentation_id','cur_bonus','total_bonus','cur_gems','total_gems'
+        'user_id',
+        'nickName',
+        'segmentation_id',
+        'cur_bonus',
+        'total_bonus',
+        'cur_gems',
+        'total_gems'
     ];
 
     public function User(){

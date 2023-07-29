@@ -5,7 +5,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class BundleRequest extends FormRequest
+class UpdateBundleRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -45,4 +45,3 @@ class BundleRequest extends FormRequest
         throw new HttpResponseException(response()->json($validator->errors()),422);
     }
 }
-
