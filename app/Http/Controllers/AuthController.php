@@ -20,7 +20,7 @@ class AuthController extends Controller
     {
         $request->validate([
             //required email OR phone number
-            'phone_number' => ['required_without:email','string','unique:users','digits_between:9,12'],
+            'phone_number' => ['required_without:email','string','unique:users','digits_between:9,14'],
             'email' => ['required_without:phone_number','string','unique:users','email'],
             'password' => ['required','string','min:8','confirmed'],
             'role_id' => ['required','numeric','digits_between:1,4'],

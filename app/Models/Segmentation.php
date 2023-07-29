@@ -8,13 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Segmentation extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'type'
+        'name', 'type' , 'period' , 'gems' , 'relation'
     ];
 
     public function Customer(){

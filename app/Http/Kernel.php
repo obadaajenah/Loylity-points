@@ -44,35 +44,35 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
-        'admin' => [
-            'Auth:sanctum',
-            \App\Http\Middleware\checkAdmin::class,
-        ],
+        // 'admin' => [
+        //     'Auth:sanctum',
+        //     \App\Http\Middleware\checkAdmin::class,
+        // ],
 
-        'partner' => [
-            'Auth:sanctum',
-            \App\Http\Middleware\checkPartner::class,            
-        ],
+        // 'partner' => [
+        //     'Auth:sanctum',
+        //     \App\Http\Middleware\checkPartner::class,            
+        // ],
 
-        'customer' => [
-            'Auth:sanctum',
-            \App\Http\Middleware\checkAdmin::class,            
-        ],
+        // 'customer' => [
+        //     'Auth:sanctum',
+        //     \App\Http\Middleware\checkAdmin::class,            
+        // ],
 
-        'pending' => [
-            'Auth:sanctum',
-            \App\Http\Middleware\checkPending::class,
-        ],
+        // 'pending' => [
+        //     'Auth:sanctum',
+        //     \App\Http\Middleware\checkPending::class,
+        // ],
 
-        'adminOrPartner' => [
-            'Auth:sanctum',
-            \App\Http\Middleware\adminOrPartner::class,
-        ],
+        // 'adminOrPartner' => [
+        //     'Auth:sanctum',
+        //     \App\Http\Middleware\adminOrPartner::class,
+        // ],
 
-        'partnerOrCustomer' => [
-            'Auth:sanctum',
-            \App\Http\Middleware\partnerOrCustomer::class
-        ]
+        // 'partnerOrCustomer' => [
+        //     'Auth:sanctum',
+        //     \App\Http\Middleware\partnerOrCustomer::class
+        // ]
     ];
 
     /**

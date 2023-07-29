@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\bundleExpirationCommand'::class
+        'App\Console\Commands\bundleExpirationCommand'::class,
+        'App\Console\Commands\bonusExpirationCommand'::class
     ];
 
     /**
@@ -26,6 +27,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('bundle:expired')->everyMinute();//->runInBackground();
+        $schedule->command('bonus:expired')->everyMinute();//->runInBackground();
     }
 
     /**
@@ -40,5 +42,6 @@ class Kernel extends ConsoleKernel
         require base_path('routes/console.php');
 
         // $this->call('bundleExpirationCommand'::class);
+        // $this->call('bonusExpirationCommand'::class);
     }
 }

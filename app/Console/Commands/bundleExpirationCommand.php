@@ -2,12 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\CommandsHistory;
 use App\Models\PartnerBundle;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use DateTime;
 use App\Models\CommandHistory;
+use App\Models\Partner;
 
 class bundleExpirationCommand extends Command
 {
@@ -52,6 +51,7 @@ class bundleExpirationCommand extends Command
 
             if ($rest_date <= 0) {
                 $pb->update(['status' => 0]);
+                Partner::firstOrFail($pb->partner_id)->update(['gems'=>0,'bonus'=>0]);
                 CommandHistory::create([
                     'command_name' => 'bundleExpirationCommand',
                     'action' => 'expire bundle  (' . $pb->bundle->name . ")  :  " . $pb->partner->user->fname,

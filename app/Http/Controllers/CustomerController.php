@@ -34,7 +34,7 @@ class CustomerController extends Controller
         $request->validate([
             'fname' => ['required', 'string'],
             'lname' => ['required', 'string'],
-            'phone_number' => ['required', 'string', 'unique:users', 'digits_between:9,12'],
+            'phone_number' => ['required', 'string', 'unique:users', 'digits_between:9,14','starts_with:0,00,+'],
             'email' => ['string', 'unique:users', 'email'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'nickName' => ['string'],
@@ -46,16 +46,24 @@ class CustomerController extends Controller
             'user_id' => $content["id"],
             'nickName' => $request["nickName"],
             'segmentation_id' => 4,
-            'cur_bonus' => 100,
-            'total_bonus' => 100,
         ]);
-        return response()->json([
-            'token' => $content['token'], 
-            'messages' =>[
-                $content['fname'] . ' account added successfully!',
-                'Welcome to our system , we give 100 bonus for your registeration'
-            ] 
-        ], 201);
+        $request->merge([
+            'value' => 100,
+            'type' => 'A2C',
+            'phone_number' => $request['phone_number']
+        ]); 
+        $bt = BonusTransferController::store($request);
+        if($bt->getStatusCode() == 200){
+            return response()->json([
+                'token' => $content['token'], 
+                'messages' =>[
+                    $content['fname'] . ' account added successfully!',
+                    'Welcome to our system , we give 100 bonus for your registeration'
+                ] 
+            ], 201);
+        }else{
+            return $bt;
+        }
     }
 
     /**
