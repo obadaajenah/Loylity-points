@@ -65,15 +65,11 @@ class PartnerController extends Controller
      */
     public function show()
     {
-        if(Auth::user()){
-            $partner = Partner::firstWhere('user_id',Auth::user()->id);
-            $partner->User;
-            $partner->Offer;
-            $partner->PartnerBundle;
-            return $partner;
-        }else{
-            return response()->json(['message' => 'unAuthorized !']);
-        }
+        $partner = Partner::firstWhere('user_id',Auth::user()->id);
+        $partner->User;
+        $partner->Offer;
+        $partner->PartnerBundle;
+        return $partner;
     }
 
     /**
@@ -85,31 +81,26 @@ class PartnerController extends Controller
      */
     public function update(Request $request)
     {
-        if(Auth::user()){
-            $id = Auth::user()->id;
-            $request->validate([
-                'phone_number'=>['string','unique:users','digits_between:9,12'],
-                'email'=>['string','unqiue:users','email'],
-                'password'=>['string','min:8'],
+        $request->validate([
+            'phone_number'=>['string','unique:users','digits_between:9,12'],
+            'email'=>['string','unqiue:users','email'],
+            'password'=>['string','min:8'],
                 'fname' =>['string'],
                 'lname' => ['string'],
                 'image' => ['image'],
-                ]);
+        ]);
     
-            if ($request->image && !is_string($request->image)) {
-                $photo = $request->image;
-                $newPhoto = time() . $photo->getClientOriginalName();
-                $photo->move('uploads/users', $newPhoto);
-                $request["img_url"] = 'uploads/users/' . $newPhoto;
-            }
-            $partner = Partner::firstWhere('user_id',$id);
-            $partner->update($request->all());
-            $user = User::findOrFail($id);
-            $user->update($request->all());
-            return response()->json(['message' => 'Your profile updated successfully!']);
-        }else{
-            return response()->json(['message' => 'unAuthorized !']);
-        }   
+        if ($request->image && !is_string($request->image)) {
+            $photo = $request->image;
+            $newPhoto = time() . $photo->getClientOriginalName();
+            $photo->move('uploads/users', $newPhoto);
+            $request["img_url"] = 'uploads/users/' . $newPhoto;
+        }
+        $partner = Partner::firstWhere('user_id',Auth::user()->id);
+        $partner->update($request->all());
+        $user = User::findOrFail(Auth::user()->id);
+        $user->update($request->all());
+        return response()->json(['message' => 'Your profile updated successfully!']);
     }
 
     /**

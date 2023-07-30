@@ -53,7 +53,6 @@ class RequestsPartnerController extends Controller
 
         if($u = User::firstWhere('email',$request['email'])){
             if($r = RequestsPartner::where('user_id',$u->id)->latest('id')->first()){
-                // dd($r->status);
                 if($r->status == 1 || $u->role_id == 2){
                     return response()->json(['message'=>'you are a partner now !'],400);
                 }else if($r->status === null){
@@ -63,9 +62,9 @@ class RequestsPartnerController extends Controller
                     $request->merge([
                         'user_id' => $u->id,
                     ]);
-                    $u->update($request->all());
+                    // $u->update($request->all());
                     RequestsPartner::create($request->all());
-                    return response()->json(['message'=>'your request submitted wish you the best this time !'],200);
+                    return response()->json(['message'=>'your request submitted with old password , wish you the best this time !'],200);
                 }
             }
         }else{

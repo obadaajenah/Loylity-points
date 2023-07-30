@@ -122,7 +122,16 @@ class OfferController extends Controller
      */
     public function show($id)
     {
-        return Offer::findOrFail($id);
+        $user = Auth::user();
+        $offer = Offer::findOrFail($id);
+
+        if($user->role_id ==2){
+            $partner = Partner::findOrFail($user->id);
+            if($offer->partner_id !== $partner->id){
+                return response()->json(['message'=>'you don\'t have a permission to show this offer!'],401);
+            }
+        }
+        return response()->json(['offer'=>$offer]);
     }
 
     /**

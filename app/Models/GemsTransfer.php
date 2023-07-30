@@ -21,7 +21,10 @@ class GemsTransfer extends Model
         'type'
     ];
 
-    public function User(){
-        return $this->belongsTo('App\Models\User');
+    public function senderUser(){
+        return $this->belongsTo('App\Models\User','sender_user_id');
+    }
+    public function receiverUser(){
+        return $this->belongsTo('App\Models\User','receiver_user_id');
     }
 }

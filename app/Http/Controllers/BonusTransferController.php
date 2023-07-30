@@ -91,4 +91,18 @@ class BonusTransferController extends Controller
         $bt->receiverUser;
         return $bt;
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function myTransfer()
+    {
+        $user = Auth::user();
+        $user->BonusTransferSender;
+        $user->BonusTransferReceiver;
+        return $user;
+    }
+
 }

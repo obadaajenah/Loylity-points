@@ -85,4 +85,18 @@ class GemsTransferController extends Controller
         $gt->receiverUser;
         return $gt;
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function myTransfer()
+    {
+        $user = Auth::user();
+        $user->GemsTransferSender;
+        $user->GemsTransferReceiver;
+        return $user;
+    }
+
 }

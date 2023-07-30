@@ -54,4 +54,20 @@ class User extends Authenticatable
     public function RequestsPartner(){
         return $this->hasMany('App\Models\RequestsPartner');
     }
+
+    public function BonusTransferSender(){
+        return $this->hasMany('App\Models\BonusTransfer','sender_user_id');
+    }
+
+    public function BonusTransferReceiver(){
+        return $this->hasMany('App\Models\BonusTransfer','receiver_user_id');
+    }
+
+    public function GemsTransferSender(){
+        return $this->hasMany('App\Models\GemsTransfer','sender_user_id');
+    }
+
+    public function GemsTransferReceiver(){
+        return $this->hasMany('App\Models\GemsTransfer','receiver_user_id');
+    }
 }

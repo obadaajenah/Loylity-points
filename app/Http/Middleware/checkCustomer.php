@@ -17,15 +17,11 @@ class checkCustomer
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::user()){
-            $user = Auth::user();
-            if($user->role_id == 3){            
-                return $next($request);
-            }else{
-                return response()->json(['message' => 'you are not customer!'],401);
-            }
+        $user = Auth::user();
+        if($user->role_id == 3){            
+            return $next($request);
         }else{
-            return response()->json(['message' => 'unAuthorized!'],401);
+            return response()->json(['message' => 'you are not customer!'],401);
         }
     }
 }
