@@ -140,4 +140,10 @@ Route::group(['prefix'=>'admin'],function(){
     Route::get('Show_Bundles',['App\Http\Controllers\BundleController'::class,'index'])->middleware(['auth:sanctum','checkAdmin']);
 
     Route::post('Modify_Request/{id}',['App\Http\Controllers\Admin\AdminController'::class,'modfiy'])->middleware(['auth:sanctum','checkAdmin']);
+
+    Route::post('Edit_password/{id}',['App\Http\Controllers\Admin\AdminController'::class,'changePassword']);
+
+    Route::post('sort_partner/{sort_by}',['App\Http\Controllers\Admin\AdminController'::class,'sort_partner']);
+
+    Route::post('search_user/{fname}',['App\Http\Controllers\Admin\AdminController'::class,'search_user']);
 });
