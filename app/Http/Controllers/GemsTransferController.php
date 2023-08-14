@@ -35,6 +35,7 @@ class GemsTransferController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge(['phone_number'=>'+'.$request->phone_number]);
         $request->validate([
             'value' => ['required','numeric'],
             'type' => ['string','in:C2C,P2C'],
@@ -94,8 +95,14 @@ class GemsTransferController extends Controller
     public function myTransfer()
     {
         $user = Auth::user();
-        $user->GemsTransferSender;
-        $user->GemsTransferReceiver;
+        foreach($user->GemsTransferSender as $b){
+            $b->senderUser;
+            $b->receiverUser;
+        }
+        foreach($user->GemsTransferReceiver as $b){
+            $b->senderUser;
+            $b->receiverUser;
+        }
         return $user;
     }
 

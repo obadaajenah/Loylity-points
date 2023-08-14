@@ -54,7 +54,7 @@ class bundleExpirationCommand extends Command
                 Partner::firstOrFail($pb->partner_id)->update(['gems'=>0,'bonus'=>0]);
                 CommandHistory::create([
                     'command_name' => 'bundleExpirationCommand',
-                    'action' => 'expire bundle  (' . $pb->bundle->name . ")  :  " . $pb->partner->user->fname,
+                    'action' => 'expire bundle  (' . $pb->bundle->name . ')  :  ' . $pb->partner->user->fname,
                     'value' => "Deactive"
                 ]);
             }

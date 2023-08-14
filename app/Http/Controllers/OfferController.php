@@ -87,21 +87,21 @@ class OfferController extends Controller
                 $partnerBundle->update(['golden_offers_number'=>$partnerBundle->golden_offers_number-1]);
             }
         }
-        if($request->segmentation_id == 2){
+        else if($request->segmentation_id == 2){
             if($partnerBundle->silver_offers_number <= 0){
                 return response()->json(['message'=>'your limit is over!']);
             }else{
                 $partnerBundle->update(['silver_offers_number'=>$partnerBundle->silver_offers_number-1]);
             }
         }
-        if($request->segmentation_id == 3){
+        else if($request->segmentation_id == 3){
             if($partnerBundle->bronze_offers_number <= 0){
                 return response()->json(['message'=>'your limit is over!']);
             }else{
                 $partnerBundle->update(['bronze_offers_number'=>$partnerBundle->bronze_offers_number-1]);
             }
         }
-        if($request->segmentation_id == 4){
+        else if($request->segmentation_id == 4){
             if($partnerBundle->new_offers_number <= 0){
                 return response()->json(['message'=>'your limit is over!']);
             }else{

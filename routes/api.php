@@ -131,7 +131,10 @@ Route::controller(OfferController::class)->group(function(){
 //Route::group(['prefix'=>'admin'],function(){
 Route::group(['prefix'=>'admin'],function(){
 
-    Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store'])->middleware(['auth:sanctum','checkAdmin']);
+    Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store']);//->middleware(['auth:sanctum','checkAdmin']);
+    // Route::post('Add_Bundle',function(){
+    //     return response()->json(['message'=>'Welcome to Add Bundle !']);
+    // });//['App\Http\Controllers\BundleController'::class,'store'])->middleware(['auth:sanctum','checkAdmin']);
 
     Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy']);
 });

@@ -44,37 +44,42 @@ class bonusExpirationCommand extends Command
         $bts = BonusTransfer::all();
 
         foreach ($bts as $bt) {
+
             $datenow = new DateTime(getdate()["year"] . "-" . getdate()["mon"] . "-" . getdate()["mday"]);
             $date = new DateTime($bt->exp_date);
 
             $rest_date = ($datenow->diff($date))->format('%R%a');
 
-            if ($rest_date < 0) {
+            if ($rest_date == -1) {
 
-                $receiver_bonus_tranfer_as_sender = BonusTransfer::where('sender_user_id',$bt->receiverUser->id)->get();
-                $total_sender = 0;
-                foreach($receiver_bonus_tranfer_as_sender as $bt2){
-                    $total_sender += $bt2->value;                    
-                }
+                $receiver_bonus_transfer_as_sender = BonusTransfer::where('sender_user_id', $bt->receiverUser->id)->get();
 
-                $cus = Customer::firstWhere('user_id',$bt->receiverUser->id);
-                if($bt->value >= $total_sender){
-                    $cus->update(['cur_bonus' => $cus->cur_bonus - $total_sender]);
+                $cus = Customer::firstWhere('user_id', $bt->receiverUser->id);
+
+                if (sizeof($receiver_bonus_transfer_as_sender) > 0) {
+
+                    $total_sender = 0;
+                    foreach ($receiver_bonus_transfer_as_sender as $bt2) {
+                        $total_sender += $bt2->value;
+                    }
+
+                    if ($bt->value >= $total_sender) {
+                        $cus->update(['cur_bonus' => $cus->cur_bonus - ($bt->value - $total_sender)]);
+
+                        CommandHistory::create([
+                            'command_name' => 'bonusExpirationCommand',
+                            'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname,
+                            'value' => $cus->cur_bonus + ($bt->value - $total_sender)
+                        ]);
+                    }
+                } else {
+                    $cus->update(['cur_bonus' => $cus->cur_bonus - $bt->value]);
 
                     CommandHistory::create([
                         'command_name' => 'bonusExpirationCommand',
-                        'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname  ,
-                        'value' => "$total_sender"
+                        'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname,
+                        'value' => $cus->cur_bonus + $bt->value
                     ]);
-                }else{
-                    $cus->update(['cur_bonus' => 0]);
-
-                    CommandHistory::create([
-                        'command_name' => 'bonusExpirationCommand',
-                        'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname  ,
-                        'value' => "$total_sender"
-                    ]);
-
                 }
             }
         }

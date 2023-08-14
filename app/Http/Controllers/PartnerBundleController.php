@@ -82,6 +82,8 @@ class PartnerBundleController extends Controller
     {
         $user = Auth::user();
         $p = Partner::where('user_id',$user->id)->get();
-        return PartnerBundle::where('partner_id',$p->id)->get();
+        $pb =  PartnerBundle::where('partner_id',$p->id)->get();
+
+        return response()->json(['pb' => $pb]);
     }
 }

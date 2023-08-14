@@ -10,6 +10,8 @@ use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPUnit\Framework\stringStartsWith;
+
 class BonusTransferController extends Controller
 {
     /**
@@ -35,11 +37,13 @@ class BonusTransferController extends Controller
      */
     public static function store(Request $request)
     {
+        $request->merge(['phone_number'=>'+'.$request->phone_number]);
         $request->validate([
             'value' => ['required','numeric'],
             'type' => ['string','in:C2C,P2C,A2C'],
             'phone_number' => ['required','exists:users,phone_number']
         ]);
+
 
         $su = Auth::user();
         if(!$su){
@@ -57,7 +61,7 @@ class BonusTransferController extends Controller
         if($su->id == $cu->id){return response()->json(['message'=>'you can\'t transfer bonus to yourself !'],400);}
 
         if($cu && $c){
-            if($bonus >= $request['value']){
+            if($bonus >= $request['value'] && $bonus - $request['value'] >= 0){
                 $c->update(['cur_bonus' => $c->cur_bonus + $request['value'],'total_bonus' => $c->total_bonus + $request['value']]);
                 if($su->role_id == 2){$s->update(['bonus'=>$s->bonus - $request['value']]);}
                 if($su->role_id == 3){$s->update(['cur_bonus'=>$s->cur_bonus - $request['value']]);}
@@ -100,8 +104,14 @@ class BonusTransferController extends Controller
     public function myTransfer()
     {
         $user = Auth::user();
-        $user->BonusTransferSender;
-        $user->BonusTransferReceiver;
+        foreach($user->BonusTransferSender as $b){
+            $b->senderUser;
+            $b->receiverUser;
+        }
+        foreach($user->BonusTransferReceiver as $b){
+            $b->senderUser;
+            $b->receiverUser;
+        }
         return $user;
     }
 

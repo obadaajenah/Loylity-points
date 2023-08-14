@@ -67,9 +67,7 @@ class PartnerController extends Controller
     {
         $partner = Partner::firstWhere('user_id',Auth::user()->id);
         $partner->User;
-        $partner->Offer;
-        $partner->PartnerBundle;
-        return $partner;
+        return response()->json(['partner'=>$partner,'offers'=>$partner->Offer,'partner_bundle'=>$partner->PartnerBundle]);
     }
 
     /**

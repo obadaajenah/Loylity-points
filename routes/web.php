@@ -6,6 +6,7 @@ use App\Models\CommandHistory;
 use App\Models\BonusTransfer;
 use App\Models\Customer;
 use App\Models\Segmentation;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,14 +32,13 @@ Route::get('date',function(){
     return getdate();
 });
 
-# NEED MORE WORK AND CHECKING  AND TESTING
 
-
+# TEST FOR BONUS EXPIRATION COMMAND (Valid for one day then cahnge your date)
 Route::get('test',function(){
     $bts = BonusTransfer::all();
     
-    // dd($bts);
     foreach ($bts as $bt) {
+
         $datenow = new DateTime(getdate()["year"] . "-" . getdate()["mon"] . "-" . getdate()["mday"]);
         $date = new DateTime($bt->exp_date);
 
@@ -46,16 +46,14 @@ Route::get('test',function(){
 
         echo "\n rest_date = " . $rest_date . "\n\n";
 
-        if ($rest_date < 0) {
+        if ($rest_date == -1) {
 
             $receiver_bonus_transfer_as_sender = BonusTransfer::where('sender_user_id',$bt->receiverUser->id)->get();
 
             echo "receiverUser id = " . $bt->receiverUser->id . "\n\n";
 
             $cus = Customer::firstWhere('user_id',$bt->receiverUser->id);
-            echo "Customer : " . $cus . "\n\n";
             if(sizeof($receiver_bonus_transfer_as_sender) > 0){
-                echo "receiver_bonus_transfer_as_sender = ". $receiver_bonus_transfer_as_sender . " \n\n";
                             
                 $total_sender = 0;
                 foreach($receiver_bonus_transfer_as_sender as $bt2){
@@ -65,24 +63,26 @@ Route::get('test',function(){
     
                 if($bt->value >= $total_sender){
                     echo "bt->value = $bt->value ,  total_sender = $total_sender\n\n";
-                    $cus->update(['cur_bonus' => $cus->cur_bonus - $total_sender]);
+                    echo "new cur_bonus = " . ($cus->cur_bonus - ($bt->value - $total_sender)) . "\n\n";
+                    $cus->update(['cur_bonus' => $cus->cur_bonus - ($bt->value - $total_sender)]);
     
-                    // CommandHistory::create([
-                    //     'command_name' => 'bonusExpirationCommand',
-                    //     'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname  ,
-                    //     'value' => "$total_sender"
-                    // ]);
+                    CommandHistory::create([
+                        'command_name' => 'bonusExpirationCommand',
+                        'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname  ,
+                        'value' => $cus->cur_bonus + ($bt->value - $total_sender)
+                    ]);
                 }
             }else{
                 echo "This user have no sending !\n\n";
-                $cus->update(['cur_bonus' => 0]);
+                echo "new cur_bonus = " . ($cus->cur_bonus - $bt->value) . "\n\n";
+                $cus->update(['cur_bonus' => $cus->cur_bonus - $bt->value]);
     
-                // CommandHistory::create([
-                //     'command_name' => 'bonusExpirationCommand',
-                //     'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname  ,
-                //     'value' => "$cus->current_bonus"
-                // ]);
-        }
+                CommandHistory::create([
+                    'command_name' => 'bonusExpirationCommand',
+                    'action' => 'expire bonus  (' . $bt->value . ")  :  " . $bt->receiverUser->fname . " " . $bt->receiverUser->lname  ,
+                    'value' => $cus->cur_bonus + $bt->value
+                ]);
+            }
         }
         echo "-----------------------------------------------------------------------------------------------------------------------\n";
     }
@@ -90,6 +90,7 @@ Route::get('test',function(){
 
 });
 
+# NEED MORE WORK AND CHECKING AND TESTING
 
 Route::get('test2',function(){
     $customers_count = sizeof(Customer::all());
@@ -106,4 +107,10 @@ Route::get('test2',function(){
             $customer->update(['segmentation_id' => 3]);
         }
     }
+});
+
+
+
+Route::get('testApi',function(){
+    $request = Request();
 });

@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command('bundle:expired')->everyMinute();//->runInBackground();
-        $schedule->command('bonus:expired')->everyMinute();//->runInBackground();
+        $schedule->command('bonus:expired')->daily();//->runInBackground();
     }
 
     /**

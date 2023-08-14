@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class CustomerController extends Controller
 {
@@ -31,10 +32,11 @@ class CustomerController extends Controller
      */
     public function register(Request $request)
     {
+        // return response()->json(['message'=>$request->phone_number]);
         $request->validate([
             'fname' => ['required', 'string'],
             'lname' => ['required', 'string'],
-            'phone_number' => ['required', 'string', 'unique:users', 'digits_between:9,14','starts_with:0,00,+'],
+            'phone_number' => ['required', 'unique:users'],
             'email' => ['string', 'unique:users', 'email'],
             'password' => ['required', 'string', 'confirmed', 'min:8'],
             'nickName' => ['string'],
@@ -90,7 +92,7 @@ class CustomerController extends Controller
     {
         $id = Auth::user()->id;
         $request->validate([
-            'phone_number' => ['string', 'unique:users', 'digits_between:9,12'],
+            'phone_number' => ['string', 'unique:users'],
             'email' => ['string', 'unique:users', 'email'],
             'password' => ['string', 'min:8'],
             'fname' => ['string'],
@@ -106,9 +108,15 @@ class CustomerController extends Controller
             $request["img_url"] = 'uploads/users/' . $newPhoto;
         }
         $customer = Customer::where('user_id', $id)->firstOrFail();
+        
         $customer->update($request->all());
         $user = User::findOrFail($id);
         $user->update($request->all());
+        // dd($request->password);
+        if($request->password){
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
         return response()->json(['message' => 'Your profile updated successfully!']);
     }
 

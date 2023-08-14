@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Http\Controllers\BonusTransferController;
 use Illuminate\Database\Seeder;
 use App\Models\Customer;
+use Illuminate\Http\Request;
 
 class CustomerSeeder extends Seeder
 {
@@ -33,7 +35,7 @@ class CustomerSeeder extends Seeder
             'total_gems' => 0,
         ]);
         Customer::create([
-            'user_id' => 3,
+            'user_id' => 6,
             'segmentation_id' => 3,
             // 'nickName' => 'SparkAO4',
             'cur_bonus' => 100,
@@ -42,7 +44,7 @@ class CustomerSeeder extends Seeder
             'total_gems' => 0,
         ]);
         Customer::create([
-            'user_id' => 3,
+            'user_id' => 7,
             'segmentation_id' => 2,
             // 'nickName' => 'SparkAO4',
             'cur_bonus' => 100,
@@ -51,7 +53,7 @@ class CustomerSeeder extends Seeder
             'total_gems' => 0,
         ]);
         Customer::create([
-            'user_id' => 3,
+            'user_id' => 8,
             'segmentation_id' => 4,
             // 'nickName' => 'SparkAO4',
             'cur_bonus' => 100,

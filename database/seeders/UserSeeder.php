@@ -44,7 +44,7 @@ class UserSeeder extends Seeder
             'lname' => '',
             'role_id' => 3,
             // 'email' => 'puma@gmail.com',
-            'phone_number' => '5555555555',
+            'phone_number' => '+9635555555555',
             'password' => hash::make('12345678'),
         ]);
         User::Create([            
@@ -52,7 +52,7 @@ class UserSeeder extends Seeder
             'lname' => '',
             'role_id' => 3,
             // 'email' => 'puma@gmail.com',
-            'phone_number' => '6666666666',
+            'phone_number' => '+9636666666666',
             'password' => hash::make('12345678'),
         ]);
         User::Create([            
@@ -60,7 +60,7 @@ class UserSeeder extends Seeder
             'lname' => '',
             'role_id' => 3,
             // 'email' => 'puma@gmail.com',
-            'phone_number' => '7777777777',
+            'phone_number' => '+9637777777777',
             'password' => hash::make('12345678'),
         ]);
         User::Create([            
@@ -68,7 +68,7 @@ class UserSeeder extends Seeder
             'lname' => '',
             'role_id' => 3,
             // 'email' => 'puma@gmail.com',
-            'phone_number' => '8888888888',
+            'phone_number' => '+9638888888888',
             'password' => hash::make('12345678'),
         ]);
     }

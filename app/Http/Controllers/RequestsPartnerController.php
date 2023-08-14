@@ -6,6 +6,7 @@ use App\Models\RequestsPartner;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class RequestsPartnerController extends Controller
 {
@@ -42,7 +43,7 @@ class RequestsPartnerController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'phone_number'=>['string','unique:users','digits_between:9,12'],
+            'phone_number'=>['string','unique:users'],
             'email'=>['required','string','email'],
             'password'=>['required','string','min:8','confirmed'],
             'fname' =>['required','string'],
@@ -62,7 +63,10 @@ class RequestsPartnerController extends Controller
                     $request->merge([
                         'user_id' => $u->id,
                     ]);
-                    // $u->update($request->all());
+                    $u->fname = $request->fname;
+                    $u->lname = $request->lname;
+                    $u->phone_number = $request->phone_number;
+                    $u->save();
                     RequestsPartner::create($request->all());
                     return response()->json(['message'=>'your request submitted with old password , wish you the best this time !'],200);
                 }
@@ -101,7 +105,7 @@ class RequestsPartnerController extends Controller
     public function update(Request $request, $id)
     {        
         $request->validate([
-            'phone_number'=>['string','unique:users','digits_between:9,12'],
+            'phone_number'=>['string','unique:users'],
             'email'=>['string','unique:users','email'],
             'password'=>['string','min:8','confirmed'],
             'fname' =>['string'],
@@ -121,7 +125,10 @@ class RequestsPartnerController extends Controller
                     $request["img_url"] = 'uploads/partners/' . $newPhoto;
                 }
                 $rp->update($request->all());
-                User::findOrFail($user->id)->update($request->all());
+                $user = User::findOrFail($user->id);
+                $user->update($request->all());
+                $user->password = Hash::make($request->password);
+                $user->save();
                 return response()->json(['message' => 'your info updated successfully !']);
             }else {
                 return response()->json(['message'=>'you can\'t update after confirmation !'],400);
