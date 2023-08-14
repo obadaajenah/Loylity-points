@@ -30,7 +30,7 @@ Route::controller(AuthController::class)->group(function(){
     //public routes :
     Route::post('loginByEmail','loginByEmail');
     Route::post('loginByNumber','loginByPhoneNumber');
-    
+
     //private routes :
     Route::middleware('auth:sanctum')->group(function(){
         Route::get('/logout','logout');
@@ -46,7 +46,7 @@ Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
 Route::controller(CustomerController::class)->group(function(){
     Route::prefix('customers')->group(function(){
         Route::post('/register','register')->name('customers.register');
-        
+
         Route::middleware(['auth:sanctum','checkCustomer'])->group(function(){
             Route::get('/profile','show')->name('customers.profile');
             Route::post('update', 'update')->name('customers.update');
@@ -84,13 +84,13 @@ Route::controller(BundleController::class)->group(function(){
 Route::controller(RequestsPartnerController::class)->group(function(){
     Route::prefix('requestPartners')->group(function(){
         Route::post('/','store')->name('requestPartners.store');
-        
-        
+
+
         Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
             Route::get('','index')->name('requestPartners.index');
             Route::get('/{id}','show')->name('requestPartners.show');
         });
-        
+
         Route::middleware(['auth:sanctum','checkPending'])->group(function(){
             Route::post('/{id}','update')->name('requestPartners.update');
         });
@@ -136,5 +136,17 @@ Route::group(['prefix'=>'admin'],function(){
     //     return response()->json(['message'=>'Welcome to Add Bundle !']);
     // });//['App\Http\Controllers\BundleController'::class,'store'])->middleware(['auth:sanctum','checkAdmin']);
 
-    Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy']);
+    Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy'])->middleware(['auth:sanctum','checkAdmin']);
+
+    Route::post('update_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'update'])->middleware(['auth:sanctum','checkAdmin']);
+
+    Route::get('Show_Bundles',['App\Http\Controllers\BundleController'::class,'index'])->middleware(['auth:sanctum','checkAdmin']);
+
+    Route::post('Modify_Request/{id}',['App\Http\Controllers\Admin\AdminController'::class,'modfiy'])->middleware(['auth:sanctum','checkAdmin']);
+
+    Route::post('Edit_password/{id}',['App\Http\Controllers\Admin\AdminController'::class,'changePassword']);
+
+    Route::post('sort_partner/{sort_by}',['App\Http\Controllers\Admin\AdminController'::class,'sort_partner']);
+
+    Route::post('search_user/{fname}',['App\Http\Controllers\Admin\AdminController'::class,'search_user']);
 });
