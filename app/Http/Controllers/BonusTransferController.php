@@ -9,8 +9,8 @@ use App\Models\Partner;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
-use function PHPUnit\Framework\stringStartsWith;
+use App\Events\NotifyEvent;
+use Illuminate\Support\Facades\Broadcast;
 
 class BonusTransferController extends Controller
 {
@@ -71,6 +71,15 @@ class BonusTransferController extends Controller
                     'exp_date' => date_add(new DateTime(),date_interval_create_from_date_string('30 days')),
                 ]);
                 BonusTransfer::create($request->all());
+
+                #Send Notification
+                // Broadcast::event(new NotifyEvent("$request->phone_number you recieved $request->value bonus from $su->fname $su->lname"))->toOthers();
+
+                // Broadcast::channel('user.{userId}',function($user,$userId,$sender,$value){
+                //     event(new NotifyEvent("$user->phone_number you recieved $value bonus from $sender->fname $sender->lname"));
+                //     return true;
+                // });
+
                 return response()->json(['messages'=>[
                     'Transfer completed successfully!',
                     "$request->phone_number you recieved $request->value bonus from $su->fname $su->lname"

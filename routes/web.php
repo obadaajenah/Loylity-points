@@ -7,6 +7,7 @@ use App\Models\BonusTransfer;
 use App\Models\Customer;
 use App\Models\Segmentation;
 use Illuminate\Http\Request;
+use App\Events\NotifyEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,4 +114,24 @@ Route::get('test2',function(){
 
 Route::get('testApi',function(){
     $request = Request();
+});
+
+
+Route::get('notify',function(){
+    event(new NotifyEvent('Manchester City Europe Super League Champion !'));
+    return response()->json(['message'=> 'your notifiacation sent Successfully <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+        
+    </body>
+    </html>']);
+});
+
+Route::get('index',function(){
+    return view('index');
 });

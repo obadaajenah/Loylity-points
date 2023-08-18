@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +17,13 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+
+
+# to use private channel 
+
+// Broadcast::routes(['middleware' => 'auth:sanctum']); // Use the 'auth:sanctum' middleware
+
+// Broadcast::channel('private-channel', function ($user) {
+//     return Auth::check() ? ['id' => $user->id, 'name' => $user->name] : null;
+// });

@@ -12,21 +12,14 @@ class BundleController extends Controller
 
     public function index()
     {
-       $bundle =Bundle::get();
-
-       if ($bundle != null){
-
-        return response()->json( $bundle);
-
-       }
-       return response()->json(['message'=>'Sorry NO Bundles yet ']);
+       return Bundle::all();
     }
 
 
     public function store(BundleRequest $request)
     {
         $bundle = Bundle::create($request->all());
-        return response()->json(['message' => 'bundle ' . $bundle->name . ' added successfully !'],200);
+        return response()->json(['message' => 'bundle ' . $bundle->name . ' added successfully !'],201);
     }
 
     /**
@@ -41,36 +34,31 @@ class BundleController extends Controller
     }
 
 
-    public function update(UpdateBundleRequest $request, $bundle_name)
+    public function update(Request $request, $id)
     {
-        $bundle = Bundle::where('name', $bundle_name)->first();
-        if ($bundle != null) {
-            $bundle->update($request->all());
-            return response()->json(['message'=>'updated the Bundle',$bundle]);
-
-        } else {
-
-
-        return response()->json(['message' => "We dont have this bundle!!"]);
-
-     }
+        $request->validate([
+            'name' => ['string'],
+            'price' => ['numeric'],
+            'bonus' => ['numeric'],
+            'gems' => ['numeric'],
+            'expiration_period' => ['numeric'],
+            'golden_offers_number' => ['numeric'],
+            'silver_offers_number' => ['numeric'],
+            'bronze_offers_number' => ['numeric'],
+            'new_offers_number' => ['numeric']
+        ]);
+        $bundle = Bundle::findOrFail($id);
+        $bundle->update($request->all());
+        return response()->json(['message' => $bundle->name . ' updated successfully !']);
     }
 
 
-    public function destroy($bundle_name)
+    public function destroy($id)
     {
-
-
-      $name =Bundle::where('name',$bundle_name)->first();
-
-        if ($name != null) {
-            $name->delete();
-
-        return response()->json(['message'=>"The Bundle $bundle_name is Deleted"]);
-        }
-
-        return response()->json(['message'=>'wrong name !!']);
-
+        $bundle = Bundle::findOrFail($id);
+        $bundle->delete();
+        return response()->json(['message'=>"The Bundle $bundle->name is Deleted"]);
     }
+
 }
 

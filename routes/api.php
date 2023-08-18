@@ -10,6 +10,8 @@ use App\Http\Controllers\RequestsPartnerController;
 use App\Http\Controllers\BonusTransferController;
 use App\Http\Controllers\GemsTransferController;
 use App\Http\Controllers\OfferController;
+use App\Http\Controllers\DefaultValueController;
+use App\Http\Controllers\Bonus2GemsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +43,7 @@ Route::controller(AuthController::class)->group(function(){
 Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
     Route::get('/roles',['App\Http\Controllers\RoleController','index']);
     Route::get('/segmentations',['App\Http\Controllers\SegmentationController','index']);
+    Route::post('/segmentations/{id}',['App\Http\Controllers\SegmentationController','update']);
 });
 
 Route::controller(CustomerController::class)->group(function(){
@@ -88,11 +91,13 @@ Route::controller(RequestsPartnerController::class)->group(function(){
 
         Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
             Route::get('','index')->name('requestPartners.index');
+            Route::get('/pending','pendingRequests')->name('requestPartners.pending');
             Route::get('/{id}','show')->name('requestPartners.show');
         });
 
         Route::middleware(['auth:sanctum','checkPending'])->group(function(){
             Route::post('/{id}','update')->name('requestPartners.update');
+            Route::delete('/{id}','destroy')->name('requestPartners.destroy');
         });
     });
     Route::get('/myrequests','myrequests')->name('my.requests')->middleware(['auth:sanctum','checkPending']);
@@ -124,29 +129,57 @@ Route::controller(OfferController::class)->group(function(){
         Route::get('/seg/{segmentation_id}','indexBySegmentation')->name('offers.indexBySegmentation')->middleware(['auth:sanctum','checkAdmin']);
         Route::get('/{id}','show')->name('offers.show')->middleware(['auth:sanctum','adminOrPartner']);
         Route::post('/','store')->name('offers.store')->middleware(['auth:sanctum','checkPartner']);
-   });
+        Route::post('/{id}','update')->name('offers.update')->middleware(['auth:sanctum','checkPartner']);
+        Route::delete('/{id}','destroy')->name('offers.delete')->middleware(['auth:sanctum','checkPartner']);
+    });
     Route::get('/myoffers','myoffers')->middleware(['auth:sanctum','checkCustomer']);
+});
+
+Route::controller(DefaultValueController::class)->group(function(){
+    Route::prefix('default')->group(function(){
+        Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
+            Route::get('/','index')->name('defaultValus.index');
+            Route::post('/{id}','update')->name('defaultValus.update');
+        });
+    });
+});
+
+Route::controller(Bonus2GemsController::class)->group(function(){
+    Route::prefix('B2G')->group(function(){
+
+        Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
+            Route::get('/','index')->name('B2G.index');
+        });
+
+        Route::middleware(['auth:sanctum','checkCustomer'])->group(function(){
+            Route::post('/','store')->name('B2G.store');
+            Route::get('/mine','mine')->name('B2G.mine');
+
+        });
+    });
 });
 
 //Route::group(['prefix'=>'admin'],function(){
 Route::group(['prefix'=>'admin'],function(){
 
-    Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store']);//->middleware(['auth:sanctum','checkAdmin']);
-    // Route::post('Add_Bundle',function(){
-    //     return response()->json(['message'=>'Welcome to Add Bundle !']);
-    // });//['App\Http\Controllers\BundleController'::class,'store'])->middleware(['auth:sanctum','checkAdmin']);
+    Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
 
-    Route::delete('Delete_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'destroy'])->middleware(['auth:sanctum','checkAdmin']);
+        Route::post('Add_Bundle',['App\Http\Controllers\BundleController'::class,'store']);
+    
+        Route::delete('Delete_Bundle/{id}',['App\Http\Controllers\BundleController'::class,'destroy']);
+    
+        Route::post('update_Bundle/{id}',['App\Http\Controllers\BundleController'::class,'update']);
+    
+        Route::get('Show_Bundles',['App\Http\Controllers\BundleController'::class,'index']);
+    
+        Route::post('Modify_Request/{id}',['App\Http\Controllers\Admin\AdminController'::class,'modfiy']);
+    
+        Route::post('Edit_password',['App\Http\Controllers\Admin\AdminController'::class,'changePassword']);
+    
+        Route::post('sort_partner/{sort_by}',['App\Http\Controllers\Admin\AdminController'::class,'sort_partner']);
+    
+        Route::post('search_user/{fname}',['App\Http\Controllers\Admin\AdminController'::class,'search_user']);
 
-    Route::post('update_Bundle/{bundle_name}',['App\Http\Controllers\BundleController'::class,'update'])->middleware(['auth:sanctum','checkAdmin']);
+    });    
 
-    Route::get('Show_Bundles',['App\Http\Controllers\BundleController'::class,'index'])->middleware(['auth:sanctum','checkAdmin']);
-
-    Route::post('Modify_Request/{id}',['App\Http\Controllers\Admin\AdminController'::class,'modfiy'])->middleware(['auth:sanctum','checkAdmin']);
-
-    Route::post('Edit_password/{id}',['App\Http\Controllers\Admin\AdminController'::class,'changePassword']);
-
-    Route::post('sort_partner/{sort_by}',['App\Http\Controllers\Admin\AdminController'::class,'sort_partner']);
-
-    Route::post('search_user/{fname}',['App\Http\Controllers\Admin\AdminController'::class,'search_user']);
 });

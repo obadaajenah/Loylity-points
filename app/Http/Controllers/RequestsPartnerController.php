@@ -34,6 +34,12 @@ class RequestsPartnerController extends Controller
         return response()->json(['user'=>$user,'requests'=>$rps]);
     }
 
+    public function pendingRequests(){
+        $rps = RequestsPartner::where('status',null)->get();
+        foreach($rps as $rp){$rp->user;}
+        return $rps;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -141,11 +147,23 @@ class RequestsPartnerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\RequestsPartner  $requestsPartner
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(RequestsPartner $requestsPartner)
+    public function destroy($id)
     {
-        //
+        $user_id = Auth::user()->id;
+        $rp = RequestsPartner::findOrFail($id);
+        $pending = User::findOrFail($user_id);
+
+        if($rp->status != null){return response()->json(['message'=>'you can\'t delete your request !']);}
+
+        if($rp->user_id == $pending->id){
+            $rp->delete();
+            return response()->json(['message'=>'your request deleted successfully !']);
+        }
+        else{
+            return response()->json(['message'=>'you aren\'t authorized !'],401);
+        }
     }
 }

@@ -13,92 +13,76 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    public function setGemsValue(Request $request){
-
-
+    public function setGemsValue(Request $request)
+    {
     }
 
 
-    public function setBonusValue(){}
-
-
-
-    public function modfiy(Request $request ,$id ){
-
-
-
-    $set= RequestsPartner::find($id);
-     if($set->stutes=='0' || $set->states=='null'){
-
-      if($request->status =='accept'){
-
-      $re= RequestsPartner::find($id);
-
-       $user=user::find($re->user_id);
-       $partner=partner::create([
-        'user_id'=>$user->id,
-     ]);
-     $user->update(['role_id'=>2]);
-     $TT=RequestsPartner::find($id);
-     $TT->update(['status' => 1]);
-     return response()->json(['message'=>"Gongrats we add new partner"]);
-
-       } elseif($request->status =='reject'){
-
-        $TT=RequestsPartner::find($id);
-        $TT->update(['status' => 0]);
-
-        return response()->json(['message'=>"we did it",]);
-       }
-
-    }
-       return response()->json(['message'=>'we decided before']);
+    public function setBonusValue()
+    {
     }
 
-   public function serch_partner(){
+    
+    public function modfiy(Request $request , $id){
+        $request->validate([
+            'status' => ['required','in:0,1']
+        ]);
 
+        $rp = RequestsPartner::findOrFail($id);
 
-   }
+        if($rp->status !== null){return response()->json(['message'=>'you can\'t modify this request !'],400);}
 
+        #Reject Case :
+        if($request->status == 0){
+            $rp->update(['status'=>$request->status]);
+            return response()->json(['message'=>'Request Partner of ' . $rp->user->fname . " " . $rp->user->lname . ' rejected !'],200);
 
-
-  public function  changePassword(ChangePassRequest $request){
-    //if (Auth::check()) {
-    $user_id =   Auth::user()->id ;
-   //$user_id = auth()->user()->id;
-    $user = User::find($user_id);
-
-    if (Hash::check($request->oldPassword, $user->password)) {
-        if ($request->newPassword == $request->oldPassword) {
-            return response()->json(['message' => ['new password  match old password ']], 450);
+        #Accept Case :
+        }else if($request->status == 1){
+            $rp->update(['status'=>$request->status]);
+            User::findOrFail($rp->user->id)->update(['role_id'=>2]);
+            Partner::create(['user_id' => $rp->user->id]);
+            return response()->json(['message'=>'Request Partner of ' . $rp->user->fname . " " . $rp->user->lname . ' accepted !'],200);
         }
-        if ($request->newPassword != $request->confirmation_password) {
-            return response()->json(['message' => ['new password not match confirmation password']], 450);
+    }
+
+    public function serch_partner()
+    {
+    }
+
+
+
+    public function changePassword(ChangePassRequest $request)
+    {
+        //if (Auth::check()) {
+        $user_id = Auth::user()->id;
+        //$user_id = auth()->user()->id;
+        $user = User::find($user_id);
+
+        if (Hash::check($request->oldPassword, $user->password)) {
+            if ($request->newPassword == $request->oldPassword) {
+                return response()->json(['message' => 'new password match old password !'], 400);
+            }
+            if ($request->newPassword != $request->confirmation_password) {
+                return response()->json(['message' => 'new password not match confirmation password'], 400);
+            }
+            $user->password = Hash::make($request->newPassword);
+            $user->save();
+            return response()->json(['message' => 'password changed successfully'],200);
+        } else {
+            return response()->json(['message' => 'old password not match '], 400);
         }
-
-        $user->password = bcrypt($request->newPassword);
-        $user->save();
-        return response()->json(['message' => ['password changed successfully']]);
-    } else {
-        return response()->json(['message' => ['old password not match ']], 450);
-    }
-// } else {
-//     // Handle the case when the user is not authenticated
-//     return response()->json(['message' => ['you are not allowed to change the password']]);
-// }
-
-}
- public function sort_partner($sort_by){
-    $par=partner::get()->sortBy($sort_by);
-    return response()->json(['message'=>'The partner is sort',$par]) ;
     }
 
-    public function search_user($fname){
-        $part=user::where('fname','like','%'.$fname.'%')->get();
+    public function sort_partner($sort_by)
+    {
+        $par = partner::get()->sortBy($sort_by);
+        return response()->json(['message' => 'The partner is sort', $par]);
+    }
+
+    public function search_user($fname)
+    {
+        $part = user::where('fname', 'like', '%' . $fname . '%')->get();
         return response()->json([$part]);
     }
-
-
-
-
 }

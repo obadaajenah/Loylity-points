@@ -18,7 +18,7 @@ class CreateSegmentationsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->date('period')->nullable();
+            $table->integer('period')->nullable();
             $table->integer('gems')->nullable();
             $table->boolean('relation')->default(1); // if true => relation is AND , if false => relation is OR
         });
@@ -41,7 +41,9 @@ class CreateSegmentationsTable extends Migration
         DB::table('segmentations')->insert([
             'id' => 4,
             'name' => 'New',
-            'type' => 'New'
+            'type' => 'New',
+            'period' => 0,
+            'gems' => 0,
         ]);
     }
 

@@ -31,4 +31,8 @@ class Customer extends Model
     public function Segmentation(){
         return $this->belongsTo('App\Models\Segmentation');
     }
+
+    public function Bonus2Gems(){
+        return $this->hasMany('App\Models\Bonus2Gems');
+    }
 }

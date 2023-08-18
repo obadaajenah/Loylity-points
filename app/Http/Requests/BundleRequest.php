@@ -29,7 +29,7 @@ class BundleRequest extends FormRequest
             'price' => ['required' , 'numeric'],
             'bonus' => ['numeric'],
             'gems' => ['numeric'],
-            'expiration_period' => ['numeric'],
+            'expiration_period' => ['required','numeric'],
             'golden_offers_number' => ['numeric','min:0'],
             'silver_offers_number' => ['numeric','min:0'],
             'bronze_offers_number' => ['numeric','min:0'],
