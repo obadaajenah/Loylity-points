@@ -5,15 +5,32 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Models\Partner;
 use App\Models\User;
+use App\Models\BonusTransfer;
+use App\Models\GemsTransfer;
 use App\Http\Controllers\Controller;
 use App\Models\RequestsPartner;
 use App\Http\Requests\ChangePassRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
+
 class AdminController extends Controller
 {
     public function setGemsValue(Request $request){
+       // GemsTransfer::create([
+         //  'value'=> $request->value
+
+        //]);
+
+        $request->Value ;
+
+
+
+
+
+//        }
+
+
 
 
     }

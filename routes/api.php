@@ -141,9 +141,13 @@ Route::group(['prefix'=>'admin'],function(){
 
     Route::post('Modify_Request/{id}',['App\Http\Controllers\Admin\AdminController'::class,'modfiy'])->middleware(['auth:sanctum','checkAdmin']);
 
-    Route::post('Edit_password/{id}',['App\Http\Controllers\Admin\AdminController'::class,'changePassword']);
+    Route::post('Edit_password/{id}',['App\Http\Controllers\Admin\AdminController'::class,'changePassword'])->middleware(['auth:sanctum','checkAdmin']);
 
-    Route::post('sort_partner/{sort_by}',['App\Http\Controllers\Admin\AdminController'::class,'sort_partner']);
+    Route::post('sort_partner/{sort_by}',['App\Http\Controllers\Admin\AdminController'::class,'sort_partner'])->middleware(['auth:sanctum','checkAdmin']);
 
-    Route::post('search_user/{fname}',['App\Http\Controllers\Admin\AdminController'::class,'search_user']);
+    Route::post('search_user/{fname}',['App\Http\Controllers\Admin\AdminController'::class,'search_user'])->middleware(['auth:sanctum','checkAdmin']);
+
+    Route::post('logout', ['App\Http\Controllers\AuthController'::class,'logout'])->middleware(['auth:sanctum','checkAdmin']);
+
+    Route::post('set_gems_value',['App\Http\Controllers\Admin\AdminController'::class,'setGemsValue'])->middleware(['auth:sanctum','checkAdmin']);
 });
