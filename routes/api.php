@@ -54,7 +54,7 @@ Route::controller(CustomerController::class)->group(function(){
             Route::get('/profile','show')->name('customers.profile');
             Route::post('update', 'update')->name('customers.update');
         });
-        Route::get('/','index')->middleware('admin')->name('customers.index');
+        Route::get('/','index')->middleware(['auth:sanctum','checkAdmin'])->name('customers.index');
     });
 });
 
@@ -179,6 +179,8 @@ Route::group(['prefix'=>'admin'],function(){
         Route::post('sort_partner/{sort_by}',['App\Http\Controllers\Admin\AdminController'::class,'sort_partner']);
     
         Route::post('search_user/{fname}',['App\Http\Controllers\Admin\AdminController'::class,'search_user']);
+
+        Route::get('commands',['App\Http\Controllers\Admin\AdminController'::class,'commands']);
 
     });    
 

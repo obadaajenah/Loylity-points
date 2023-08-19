@@ -55,7 +55,7 @@ class bundleExpirationCommand extends Command
                 CommandHistory::create([
                     'command_name' => 'bundleExpirationCommand',
                     'action' => 'expire bundle  (' . $pb->bundle->name . ')  :  ' . $pb->partner->user->fname,
-                    'value' => "Deactive"
+                    'value' => "Deactived"
                 ]);
             }
         }

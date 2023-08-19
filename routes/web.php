@@ -119,19 +119,22 @@ Route::get('testApi',function(){
 
 Route::get('notify',function(){
     event(new NotifyEvent('Manchester City Europe Super League Champion !'));
-    return response()->json(['message'=> 'your notifiacation sent Successfully <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-    </head>
-    <body>
-        
-    </body>
-    </html>']);
+    return response()->json(['message'=> 'your notifiacation sent Successfully']);
 });
 
 Route::get('index',function(){
     return view('index');
 });
+
+
+/**
+ *                 $pusher = new Pusher('7e128d7214eddf18c6d0', '36b32569fb0299435f99', '1442095', array('cluster' => 'ap2'));
+ 
+ *               $pusher->trigger(
+ *                  '1-channel',
+ *                 'my-event',
+ *                "$pu->name blocked automaticlly because he canceled appointments 5 times!",
+ *               // array('info' => 'subscription_count')
+ *          );
+
+ */

@@ -22,5 +22,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PartnerBundleSeeder::class);
         $this->call(OfferSeeder::class);
         $this->call(BonusTransferSeeder::class);
+        $this->call(CommandHistorySeeder::class);
     }
 }

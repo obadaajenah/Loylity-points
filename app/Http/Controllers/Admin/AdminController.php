@@ -10,6 +10,7 @@ use App\Models\GemsTransfer;
 use App\Http\Controllers\Controller;
 use App\Models\RequestsPartner;
 use App\Http\Requests\ChangePassRequest;
+use App\Models\CommandHistory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -87,5 +88,9 @@ class AdminController extends Controller
     {
         $part = user::where('fname', 'like', '%' . $fname . '%')->get();
         return response()->json([$part]);
+    }
+
+    public function commands(){
+        return CommandHistory::all();
     }
 }
