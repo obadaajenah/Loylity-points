@@ -21,7 +21,6 @@ class CreateOffersTable extends Migration
             $table->string('img_url')->default('uploads/offers/default.jpg');
             $table->integer('valueInBonus')->nullable();   
             $table->integer('valueInGems')->nullable();
-            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }

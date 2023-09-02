@@ -17,16 +17,6 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-    public function setGemsValue(Request $request)
-    {
-    }
-
-
-    public function setBonusValue()
-    {
-    }
-
-    
     public function modfiy(Request $request , $id){
         $request->validate([
             'status' => ['required','in:0,1']
@@ -50,17 +40,9 @@ class AdminController extends Controller
         }
     }
 
-    public function serch_partner()
-    {
-    }
-
-
-
     public function changePassword(ChangePassRequest $request)
     {
-        //if (Auth::check()) {
         $user_id = Auth::user()->id;
-        //$user_id = auth()->user()->id;
         $user = User::find($user_id);
 
         if (Hash::check($request->oldPassword, $user->password)) {

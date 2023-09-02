@@ -6,9 +6,10 @@ use App\Models\GemsTransfer;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\Partner;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Events\NotifyEvent;
+use Illuminate\Support\Facades\Broadcast;
 
 class GemsTransferController extends Controller
 {
@@ -53,7 +54,7 @@ class GemsTransferController extends Controller
         if($su->id == $cu->id){return response()->json(['message'=>'you can\'t transfer gems to your self !'],400);}
 
         if($cu && $c){
-            if($gems >= $request['value']){
+            if($gems >= $request['value'] && $gems - $request['value'] >= 0){
                 $c->update(['cur_gems' => $c->cur_gems + $request['value'],'total_gems' => $c->total_gems + $request['value']]);
                 if($su->role_id == 2){$s->update(['gems'=>$s->gems - $request['value']]);}
                 if($su->role_id == 3){$s->update(['cur_gems'=>$s->cur_gems - $request['value']]);}
@@ -62,10 +63,14 @@ class GemsTransferController extends Controller
                     'receiver_user_id' => $cu->id,
                 ]);
                 GemsTransfer::create($request->all());
-                return response()->json(['messages'=>[                
-                    'Transfer completed successfully!',
-                    "$request->phone_number you recieved $request->value gems from $su->fname $su->lname"
-                ]]);
+
+                #Send Notification
+                Broadcast::channel('user.{userId}',function($user,$userId,$sender,$value){
+                    event(new NotifyEvent("$user->phone_number you recieved $value gems from $sender->fname $sender->lname"));
+                    return true;
+                });
+                
+                return response()->json(['messages'=>['Transfer completed successfully!']]);
             }else{
                 return response()->json(['message'=>'you don\'t have enough gems to transfer !'],400);
             }
@@ -105,5 +110,4 @@ class GemsTransferController extends Controller
         }
         return $user;
     }
-
 }

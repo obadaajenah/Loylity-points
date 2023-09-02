@@ -142,4 +142,9 @@ class AuthController extends Controller
             return response()->json(['message' => 'Bad request']);
         }
     }
+
+    public function myRole(){
+        $user = Auth::user();
+        return response()->json(['role_id' => $user->role_id]);
+    }
 }

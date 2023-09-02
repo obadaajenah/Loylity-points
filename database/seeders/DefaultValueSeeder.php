@@ -22,5 +22,9 @@ class DefaultValueSeeder extends Seeder
             'name' => 'G2$',
             'value' => 12.5
         ]);
+        DefaultValue::create([
+            'name' => 'profit',
+            'value' => 0.1
+        ]);
     }
 }

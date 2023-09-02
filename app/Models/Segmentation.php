@@ -17,7 +17,13 @@ class Segmentation extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'type' , 'period' , 'gems' , 'relation'
+        'name', 
+        'type' , 
+        'period' , 
+        'gems' , 
+        'relation' , 
+        'offerMaxGems',
+        'offerMaxBonus'
     ];
 
     public function Customer(){

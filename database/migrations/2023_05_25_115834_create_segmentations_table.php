@@ -21,6 +21,8 @@ class CreateSegmentationsTable extends Migration
             $table->integer('period')->nullable();
             $table->integer('gems')->nullable();
             $table->boolean('relation')->default(1); // if true => relation is AND , if false => relation is OR
+            $table->integer('offerMaxGems')->default(0);
+            $table->integer('offerMaxBonus')->default(0);
         });
 
         DB::table('segmentations')->insert([

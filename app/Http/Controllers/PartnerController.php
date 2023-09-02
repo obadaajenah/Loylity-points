@@ -6,9 +6,18 @@ use App\Models\Partner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\PartnerBundle;
+use Illuminate\Support\Facades\Hash;
 
 class PartnerController extends Controller
 {
+
+    public function indexAdmin(){
+        $partners = Partner::all();
+        foreach($partners as $p){$p->user;$p->user->BonusTransferSender;$p->user->BonusTransferReceiver;$p->user->GemsTransferSender;$p->user->GemsTransferReceiver;$p->offer;$p->PartnerBundle;}
+        return $partners;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -19,14 +28,16 @@ class PartnerController extends Controller
         $partners = Partner::all();
         $res = [];$i=0;
         foreach($partners as $p){
-            $res[$i]["fname"] = $p->user["fname"];
-            $res[$i]["lname"] = $p->user["lname"];
-            $res[$i]["email"] = $p->user["email"];
-            $res[$i]["phone_number"] = $p->user["phone_number"];
-            $res[$i]["img_url"] = $p->user["img_url"];
-            $res[$i]["offer"] = $p->offer;
-            $res[$i]["PartnerBundle"] = $p->PartnerBundle;
-            $i++;
+            if(PartnerBundle::where('partner_id',$p->id)->where('status',1)->first()){
+                $res[$i]["fname"] = $p->user["fname"];
+                $res[$i]["lname"] = $p->user["lname"];
+                $res[$i]["email"] = $p->user["email"];
+                $res[$i]["phone_number"] = $p->user["phone_number"];
+                $res[$i]["img_url"] = $p->user["img_url"];
+                $res[$i]["offer"] = $p->offer;
+                $res[$i]["PartnerBundle"] = $p->PartnerBundle;
+                $i++;
+            }
         }
         return $res;
     }
@@ -37,24 +48,14 @@ class PartnerController extends Controller
      */
     public function indexName()
     {
-        // return User::where('role_id',2)->get('fname');
         $ps = Partner::all();
         $res =[];
         foreach($ps as $p){
-            $res = array_merge($res,[$p->user["fname"] . ' ' . $p->user["lname"]]);
+            if(PartnerBundle::where('partner_id',$p->id)->where('status',1)->first()){
+                $res = array_merge($res,[$p->user["fname"] . ' ' . $p->user["lname"]]);
+            }
         }
         return $res;
-        }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -80,12 +81,12 @@ class PartnerController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'phone_number'=>['string','unique:users','digits_between:9,12'],
-            'email'=>['string','unqiue:users','email'],
+            'phone_number'=>['string','unique:users'],
+            'email'=>['string','unique:users','email'],
             'password'=>['string','min:8'],
-                'fname' =>['string'],
-                'lname' => ['string'],
-                'image' => ['image'],
+            'fname' =>['string'],
+            'lname' => ['string'],
+            'image' => ['image'],
         ]);
     
         if ($request->image && !is_string($request->image)) {
@@ -98,17 +99,10 @@ class PartnerController extends Controller
         $partner->update($request->all());
         $user = User::findOrFail(Auth::user()->id);
         $user->update($request->all());
+        if($request->password){
+            $user->password = Hash::make($request->password);
+            $user->save();
+        }
         return response()->json(['message' => 'Your profile updated successfully!']);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Partner  $partner
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Partner $partner)
-    {
-        //
     }
 }

@@ -26,7 +26,6 @@ class BundleRequest extends FormRequest
     {
         return [
             'name' => ['required' , 'string'],
-            'price' => ['required' , 'numeric'],
             'bonus' => ['numeric'],
             'gems' => ['numeric'],
             'expiration_period' => ['required','numeric'],

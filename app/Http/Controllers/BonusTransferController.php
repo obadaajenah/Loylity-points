@@ -43,10 +43,9 @@ class BonusTransferController extends Controller
             'type' => ['string','in:C2C,P2C,A2C'],
             'phone_number' => ['required','exists:users,phone_number']
         ]);
-
-
         $su = Auth::user();
-        if(!$su){
+
+        if($request['type'] == 'A2C'){
             $bonus = 999999999;
             $su = User::where('id',1)->firstOrFail();
         }else{
@@ -63,8 +62,8 @@ class BonusTransferController extends Controller
         if($cu && $c){
             if($bonus >= $request['value'] && $bonus - $request['value'] >= 0){
                 $c->update(['cur_bonus' => $c->cur_bonus + $request['value'],'total_bonus' => $c->total_bonus + $request['value']]);
-                if($su->role_id == 2){$s->update(['bonus'=>$s->bonus - $request['value']]);}
-                if($su->role_id == 3){$s->update(['cur_bonus'=>$s->cur_bonus - $request['value']]);}
+                if($su->role_id == 2){$s->update(['bonus'=>$s->bonus - $request['value']]);$name=$su->fname.' '.$su->lname;}
+                if($su->role_id == 3){$s->update(['cur_bonus'=>$s->cur_bonus - $request['value']]);$name=$s->nickName;}
                 $request->merge([
                     'sender_user_id' => $su->id,
                     'receiver_user_id' => $cu->id,
@@ -73,17 +72,12 @@ class BonusTransferController extends Controller
                 BonusTransfer::create($request->all());
 
                 #Send Notification
-                // Broadcast::event(new NotifyEvent("$request->phone_number you recieved $request->value bonus from $su->fname $su->lname"))->toOthers();
-
-                // Broadcast::channel('user.{userId}',function($user,$userId,$sender,$value){
-                //     event(new NotifyEvent("$user->phone_number you recieved $value bonus from $sender->fname $sender->lname"));
-                //     return true;
-                // });
-
-                return response()->json(['messages'=>[
-                    'Transfer completed successfully!',
-                    "$request->phone_number you recieved $request->value bonus from $su->fname $su->lname"
-                    ]]);
+                Broadcast::channel('user.{userId}',function($user,$userId,$sender,$value){
+                    event(new NotifyEvent("$user->phone_number you recieved $value bonus from $sender->fname $sender->lname"));
+                    return true;
+                });
+                
+                return response()->json(['messages'=>['Transfer completed successfully!']]);
             }else{
                 return response()->json(['message'=>'you don\'t have enough bonus to transfer !'],400);
             }
@@ -123,5 +117,4 @@ class BonusTransferController extends Controller
         }
         return $user;
     }
-
 }

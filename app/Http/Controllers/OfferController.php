@@ -9,6 +9,10 @@ use App\Models\PartnerBundle;
 use DateTime;
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use App\Models\Segmentation;
+
 
 class OfferController extends Controller
 {
@@ -19,7 +23,15 @@ class OfferController extends Controller
      */
     public function index()
     {
-        return Offer::all();
+        $offers = Offer::all();
+        $res =[];$i=0;
+        foreach($offers as $offer){
+            if(PartnerBundle::where('partner_id',$offer->partner_id)->where('status',1)->first()){
+                $res[$i] = $offer;
+                $i++;
+            }
+        }
+        return $res;
     }
 
     /**
@@ -41,7 +53,15 @@ class OfferController extends Controller
     {
         $user = Auth::user();
         $c = Customer::firstWhere('user_id',$user->id);
-        return Offer::where('segmentation_id',$c->segmentation_id)->get();
+        $offers = Offer::where('segmentation_id',$c->segmentation_id)->get();
+        $res = [];$i=0;
+        foreach($offers as $offer){
+            if(PartnerBundle::where('partner_id',$offer->partner_id)->where('status',1)->first()){
+                $res[$i] = $offer;
+                $i++;
+            }
+        }
+        return $res;
     }
 
     /**
@@ -56,7 +76,6 @@ class OfferController extends Controller
             'segmentation_id' => ['required','numeric','digits_between:1,4'],
             'valueInBonus' => ['required_without:valueInGems','numeric','min:0'],
             'valueInGems' => ['required_without:valueInBonus','numeric','min:0'],
-            'quantity' => ['required','numeric','min:0'],
             'image' => ['image'],
             'name' => ['required','string']
         ]);
@@ -71,7 +90,7 @@ class OfferController extends Controller
         $partner = Partner::firstWhere(['user_id'=>Auth::user()->id]);
         $partnerBundle = PartnerBundle::where('partner_id',$partner->id)->where('status',1)->latest('id')->first();
 
-        if(!$partnerBundle){return response()->json(['message'=>'please buy bundle to add an offer']);}
+        if(!$partnerBundle){return response()->json(['message'=>'please buy bundle to add an offer'],403);}
 
         #check validty of bundle
         $interval = date_diff(new DateTime(),new DateTime($partnerBundle->end_date))->format('%R%a');
@@ -147,10 +166,17 @@ class OfferController extends Controller
             'segmentation_id' => ['numeric','digits_between:1,4'],
             'valueInBonus' => ['numeric','min:0'],
             'valueInGems' => ['numeric','min:0'],
-            'quantity' => ['numeric','min:0'],
             'image' => ['image'],
             'name' => ['string']
         ]);
+
+        $segmentation = Segmentation::findOrFail($request->segmentation_id);
+        $maxBonus = $segmentation->offerMaxBonus;
+        $maxGems = $segmentation->offerMaxGems;
+
+        if ($request->valueInBonus > $maxBonus || $request->valueInGems > $maxGems){
+            return response()->json(['message'=>'you can\'t set the value greater than max !'],400);
+        }
 
         if ($request->image && !is_string($request->image)) {
             $photo = $request->image;
@@ -218,6 +244,28 @@ class OfferController extends Controller
         }
         else{
             return response()->json(['message'=>'you aren\'t authorized !'],401);
+        }
+    }
+
+    public function sellOffer($id){
+        $offer = Offer::findOrFail($id);
+        $partner = Partner::findOrFail($offer->partner_id);
+        $customer = Customer::firstWhere('user_id',Auth::user()->id);
+        #Segmentation of offer is same to Segmentation of customer 
+        if($offer->segmentation_id == $customer->segmentation_id){
+            #check if customer has enough bonus and gems
+            if($customer->cur_bonus >= $offer->valueInBonus && $customer->cur_gems >= $offer->valueInGems){
+                    $customer->decrement('cur_bonus',(int)$offer->valueInBonus);
+                    $customer->decrement('cur_gems',(int)$offer->valueInGems);
+                    $partner->increment('bonus',(int)$offer->valueInBonus);
+                    $partner->increment('gems',(int)$offer->valueInGems);
+                    $offer->delete();
+                    return response()->json(['message'=>'offer bought successfully , you can contact with ' . $partner->user->fname . ' ('.$partner->user->email.') to get the offer !'],201);
+            }else{
+                return response()->json(['message'=>'you don\'t have enough bonus\gems to complete operation !'],400);
+            }
+        }else{
+            return response()->json(['message'=>'Sorry , this offer unavailable now !'],403);
         }
     }
 }

@@ -20,7 +20,7 @@ class CustomerController extends Controller
     public function index()
     {
         $customers = Customer::all();
-        foreach ($customers as $c) {$c->user;$c->segmentation;}
+        foreach ($customers as $c) {$c->user;$c->segmentation;$c->user->BonusTransferSender;$c->user->BonusTransferReceiver;$c->user->GemsTransferSender;$c->user->GemsTransferReceiver;$c->Bonus2Gems;}
         return $customers;
     }
 
@@ -112,22 +112,10 @@ class CustomerController extends Controller
         $customer->update($request->all());
         $user = User::findOrFail($id);
         $user->update($request->all());
-        // dd($request->password);
         if($request->password){
             $user->password = Hash::make($request->password);
             $user->save();
         }
         return response()->json(['message' => 'Your profile updated successfully!']);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Customer  $customer
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Customer $customer)
-    {
-        //
     }
 }

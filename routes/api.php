@@ -12,6 +12,8 @@ use App\Http\Controllers\GemsTransferController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\DefaultValueController;
 use App\Http\Controllers\Bonus2GemsController;
+use App\Http\Controllers\Gems2CashController;
+use App\Http\Controllers\PartnerBundleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +39,7 @@ Route::controller(AuthController::class)->group(function(){
     Route::middleware('auth:sanctum')->group(function(){
         Route::get('/logout','logout');
         Route::get('/logoutAll','logoutAll');
+        Route::get('/myRole','myRole');
     });
 });
 
@@ -67,20 +70,26 @@ Route::controller(PartnerController::class)->group(function(){
             Route::get('profile','show')->name('partners.profile');
             Route::post('update', 'update')->name('partners.update');
         });
+
+        Route::get('/admin','indexAdmin')->middleware(['auth:sanctum','checkAdmin']);
     });
 });
 
 Route::controller(BundleController::class)->group(function(){
     Route::prefix('bundles')->group(function(){
 
-        Route::middleware(['auth:sanctum','adminOrPartner'])->group(function(){
-            Route::get('/','index')->name('bundles.index');
-            Route::get('/{id}','show')->name('bundles.show');
-        });
-
+        Route::get('/','index')->name('bundles.index');
+        Route::get('/{id}','show')->name('bundles.show');
+        
         Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
             Route::post('/store','store')->name('bundles.store');
         });
+    });
+});
+
+Route::controller(PartnerBundleController::class)->group(function(){
+    Route::middleware(['auth:sanctum','checkPartner'])->group(function(){
+        Route::post('buyBundle','buyBundle');
     });
 });
 
@@ -127,6 +136,7 @@ Route::controller(OfferController::class)->group(function(){
     Route::prefix('offers')->group(function(){
         Route::get('/','index')->name('offers.index')->middleware('auth:sanctum','checkAdmin');
         Route::get('/seg/{segmentation_id}','indexBySegmentation')->name('offers.indexBySegmentation')->middleware(['auth:sanctum','checkAdmin']);
+        Route::get('sellOffer/{id}','sellOffer')->name('offer.buy')->middleware(['auth:sanctum','checkCustomer']);
         Route::get('/{id}','show')->name('offers.show')->middleware(['auth:sanctum','adminOrPartner']);
         Route::post('/','store')->name('offers.store')->middleware(['auth:sanctum','checkPartner']);
         Route::post('/{id}','update')->name('offers.update')->middleware(['auth:sanctum','checkPartner']);
@@ -159,7 +169,20 @@ Route::controller(Bonus2GemsController::class)->group(function(){
     });
 });
 
-//Route::group(['prefix'=>'admin'],function(){
+Route::controller(Gems2CashController::class)->group(function(){
+    Route::prefix('G2C')->group(function(){
+
+        Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){
+            Route::get('/','index')->name('G2C.index');
+        });
+
+        Route::middleware(['auth:sanctum','checkCustomer'])->group(function(){
+            Route::post('/','store')->name('G2C.store');
+            Route::get('/mine','mine')->name('G2C.mine');
+        });
+    });
+});
+
 Route::group(['prefix'=>'admin'],function(){
 
     Route::middleware(['auth:sanctum','checkAdmin'])->group(function(){

@@ -46,11 +46,10 @@ class DefaultValueController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => ['string'],
             'value' => ['string']
         ]);
 
-        DefaultValue::findOrFail($id)->update($request->all());
+        DefaultValue::findOrFail($id)->update(['value' => $request->value]);
 
         return response()->json(['message'=>'Default value updated successfully !']);
     }

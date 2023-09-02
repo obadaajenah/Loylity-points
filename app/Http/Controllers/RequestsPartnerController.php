@@ -76,6 +76,17 @@ class RequestsPartnerController extends Controller
                     RequestsPartner::create($request->all());
                     return response()->json(['message'=>'your request submitted with old password , wish you the best this time !'],200);
                 }
+            }else{
+                $request["role_id"] = 4;
+                $request->merge([
+                    'user_id' => $u->id,
+                ]);
+                $u->fname = $request->fname;
+                $u->lname = $request->lname;
+                $u->phone_number = $request->phone_number;
+                $u->save();
+                RequestsPartner::create($request->all());
+                return response()->json(['message'=>'your request submitted with old password , wish you the best this time !'],200);
             }
         }else{
             $request["role_id"] = 4;
@@ -128,7 +139,7 @@ class RequestsPartnerController extends Controller
                     $photo = $request->image;
                     $newPhoto = time() . $photo->getClientOriginalName();
                     $photo->move('uploads/users', $newPhoto);
-                    $request["img_url"] = 'uploads/partners/' . $newPhoto;
+                    $request["img_url"] = 'uploads/users/' . $newPhoto;
                 }
                 $rp->update($request->all());
                 $user = User::findOrFail($user->id);

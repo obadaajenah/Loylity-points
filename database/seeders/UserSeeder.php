@@ -20,15 +20,14 @@ class UserSeeder extends Seeder
             'lname' => '',
             'role_id' => 2,
             'email' => 'magilla@gmail.com',
-            // 'phone_number' => '',
             'password' => hash::make('12345678'),
+            'img_url' => 'uploads/users/magilla.jpg'
         ]);
         User::Create([
             'fname' => 'Mhd Alaa',
             'lname' => 'Olabi',
             'role_id' => 3,
-            // 'email' => 'magilla@gmail.com',
-            'phone_number' => '963965695776',
+            'phone_number' => '+963965695776',
             'password' => hash::make('alaa1234'),
         ]);
         User::Create([            
@@ -36,14 +35,13 @@ class UserSeeder extends Seeder
             'lname' => '',
             'role_id' => 2,
             'email' => 'puma@gmail.com',
-            // 'phone_number' => '963965695776',
             'password' => hash::make('puma1234'),
+            'img_url' => 'uploads/users/puma.png'
         ]);
         User::Create([            
             'fname' => 'fouad',
             'lname' => '',
             'role_id' => 3,
-            // 'email' => 'puma@gmail.com',
             'phone_number' => '+9635555555555',
             'password' => hash::make('12345678'),
         ]);
@@ -51,7 +49,6 @@ class UserSeeder extends Seeder
             'fname' => 'farouq',
             'lname' => '',
             'role_id' => 3,
-            // 'email' => 'puma@gmail.com',
             'phone_number' => '+9636666666666',
             'password' => hash::make('12345678'),
         ]);
@@ -59,7 +56,6 @@ class UserSeeder extends Seeder
             'fname' => 'firas',
             'lname' => '',
             'role_id' => 3,
-            // 'email' => 'puma@gmail.com',
             'phone_number' => '+9637777777777',
             'password' => hash::make('12345678'),
         ]);
@@ -67,7 +63,6 @@ class UserSeeder extends Seeder
             'fname' => 'farah',
             'lname' => '',
             'role_id' => 3,
-            // 'email' => 'puma@gmail.com',
             'phone_number' => '+9638888888888',
             'password' => hash::make('12345678'),
         ]);

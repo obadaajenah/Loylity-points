@@ -17,7 +17,9 @@ class Bonus2GemsController extends Controller
      */
     public function index()
     {
-        return Bonus2Gems::all();
+        $b2gs = Bonus2Gems::all();
+        foreach($b2gs as $b2g){$b2g->customer->user;}
+        return $b2gs;
     }
 
     /**
@@ -66,48 +68,4 @@ class Bonus2GemsController extends Controller
         return response()->json(['b2gs'=>$b2gs]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Bonus2Gems  $bonus2Gems
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Bonus2Gems $bonus2Gems)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Bonus2Gems  $bonus2Gems
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Bonus2Gems $bonus2Gems)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Bonus2Gems  $bonus2Gems
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Bonus2Gems $bonus2Gems)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Bonus2Gems  $bonus2Gems
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Bonus2Gems $bonus2Gems)
-    {
-        //
-    }
 }

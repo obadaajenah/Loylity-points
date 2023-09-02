@@ -30,47 +30,54 @@ class PartnerBundleController extends Controller
     public function buyBundle(Request $request)
     {
         $request->validate([
-            'bundle_id' => ['required' , 'numeric']
+            'bundle_id' => ['required' , 'numeric'],
+            'card_number' => ['required','string'],
+            'secret_key' => ['required','string']
         ]);
 
         $bundle = Bundle::findOrFail($request->bundle_id);
-        $request->merge(['price'=>$bundle->price]);
-
-        #check if partner has a bundle in this month 
-
-        #check if partner has enough money to buy this bundle
-
-
-        /*
-        ************using Bank API****************
-        if(partner -> bankAccount -> balance >= $bundle -> price){
-            transferToAdminAccount($bundle -> price);
-        }
-        */
-
+        
         $user = Auth::user();
         if($user->role_id == 2){
-            $p = Partner::where('user_id',$user->id)->get();
-            $p->update([
+            $partner = Partner::where('user_id',$user->id)->firstOrFail();
+            
+            #check if partner has a bundle in this month
+            $pb = PartnerBundle::where('partner_id',$partner->id)->where('status',1)->first();
+            if(isset($pb)){
+                return response()->json(['message'=>'you can\'t buy bundle when you have one !'],400);
+            }
+
+            #using Bank Api-------------------------------------------------------------------
+            CardController::checkout($request,$bundle->price);
+            #---------------------------------------------------------------------------------
+            
+            $partner->update([
                 'gems'=>$bundle->gems,
-                'bouns'=>$bundle->bonus,
-                'status'=>1
+                'bonus'=>$bundle->bonus,
             ]);
             $now = new DateTime();
             $request->merge([
-                'partner_id' => $p->id,
-                'price' => $bundle->price,
                 'start_date' => getdate()['year'].'-'.getdate()['mon'].'-'.getdate()['mday'],
                 'end_date' => date_add($now,date_interval_create_from_date_string($bundle->expiration_period . ' days')) //getdate()+$bundle->expiration_period,
             ]);
 
-            PartnerBundle::create($request->all());
+            PartnerBundle::create([
+                'partner_id' => $partner->id,
+                'bundle_id' => $bundle->id,
+                'status' => 1,
+                'price' => $bundle->price,
+                'golden_offers_number' => $bundle->golden_offers_number,
+                'silver_offers_number' => $bundle->silver_offers_number,
+                'bronze_offers_number' => $bundle->bronze_offers_number,
+                'new_offers_number' => $bundle->new_offers_number,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date
+            ]);
 
             return response()->json(['message'=>'bundle bought successfully!'],201);
         }else{
             return response()->json(['message'=>'you are not a partner !']);
         }
-
     }
 
     /**

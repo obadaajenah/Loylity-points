@@ -15,13 +15,15 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call(DefaultValueSeeder::class);
+        $this->call(BundleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(PartnerSeeder::class);
         $this->call(CustomerSeeder::class);
-        $this->call(BundleSeeder::class);
         $this->call(PartnerBundleSeeder::class);
         $this->call(OfferSeeder::class);
         $this->call(BonusTransferSeeder::class);
         $this->call(CommandHistorySeeder::class);
+        $this->call(AccountSeeder::class);
+        $this->call(CardSeeder::class);
     }
 }

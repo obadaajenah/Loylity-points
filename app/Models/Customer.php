@@ -35,4 +35,9 @@ class Customer extends Model
     public function Bonus2Gems(){
         return $this->hasMany('App\Models\Bonus2Gems');
     }
+
+    public function Gems2Cash(){
+        return $this->hasMany('App\Models\Gems2Cash');
+    }
+
 }

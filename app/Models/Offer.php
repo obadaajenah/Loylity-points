@@ -20,7 +20,6 @@ class Offer extends Model
         'segmentation_id',
         'valueInBonus',
         'valueInGems',
-        'quantity',
         'img_url'
     ];
 
