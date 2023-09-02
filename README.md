@@ -6,6 +6,29 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
+**## Project Description**
+
+**Who are the users? **
+-Admin
+-Partner
+-Customer
+
+**How to work?** 
+-Sign in as admin
+-Request register as partner
+-Sign up as customer
+-Admin will add bundle (subscription plans) 
+-Partner will buy one of them
+-Customer will take a points (bonus or gems) from partner
+-Customer segmentation will rise by taken more gems 
+-Customer will replace his  points with offers 
+-Customer can send points to friend to use it
+-Customer can use QR Code to receive a points 
+
+**And alot of more features you can discover it in our app!**
+
+**It developed with a very great and funny team ❤️**
+
 
 ## About Laravel
 
